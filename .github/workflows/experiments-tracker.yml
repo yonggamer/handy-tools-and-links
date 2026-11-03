@@ -1,0 +1,65 @@
+
+name: Update Experiments List
+
+on:
+  push:
+    paths:
+      - 'experiments/current experiments/**'
+      - '.github/workflows/update-experiments.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scan-experiments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find HTML experiments
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          folder = Path("experiments/current experiments")
+
+          experiments = []
+
+          if folder.exists():
+              for file in sorted(
+                  folder.glob("*.html"),
+                  key=lambda f: f.name.lower()
+              ):
+                  experiments.append({
+                      "name": file.stem.replace("-", " ").replace("_", " ").title(),
+                      "file": file.name
+                  })
+
+          output = Path("experiments/experiments.json")
+          output.parent.mkdir(parents=True, exist_ok=True)
+
+          output.write_text(
+              json.dumps(experiments, indent=4),
+              encoding="utf-8"
+          )
+
+          print(f"Found {len(experiments)} experiments.")
+          PY
+
+      - name: Save updated experiment list
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add experiments/experiments.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to save."
+          else
+            git commit -m "Automatically update experiments list"
+            git push
+          fi
