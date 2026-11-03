@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Handy Links</title>
+
+<style>
+:root {
+    --bg: #f5f7fc;
+    --surface: #ffffff;
+    --text: #182033;
+    --muted: #788398;
+    --border: #e6eaf1;
+    --accent: #635bff;
+    --soft: #eeedff;
+}
+
+.dark {
+    --bg: #101522;
+    --surface: #1a2232;
+    --text: #f1f4fa;
+    --muted: #9ba7ba;
+    --border: #30394b;
+    --accent: #a29bff;
+    --soft: #29274c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: .2s;
+}
+
+button, input {
+    font: inherit;
+}
+
+/* HEADER */
+
+header {
+    min-height: 70px;
+    padding: 12px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--text);
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+.theme-btn {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* MAIN */
+
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 1150px;
+    margin: auto;
+    padding: 45px 24px;
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    margin: 15px auto 55px;
+    max-width: 650px;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--soft);
+    color: var(--accent);
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: clamp(36px, 5vw, 55px);
+    letter-spacing: -2px;
+    margin: 20px 0;
+}
+
+.hero p {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* SEARCH */
+
+.search-box {
+    width: min(100%, 500px);
+    margin: 30px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.search-box span {
+    font-size: 21px;
+    color: var(--muted);
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.search-box:focus-within {
+    border-color: var(--accent);
+}
+
+/* SECTION */
+
+.section-title {
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+/* CATEGORIES */
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 25px;
+}
+
+.category {
+    padding: 9px 15px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.category:hover {
+    border-color: var(--accent);
+}
+
+.category.active {
+    background: var(--soft);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* LINK CARDS */
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 15px;
+}
+
+.link-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: .2s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+}
+
+.link-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.link-icon {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    background: var(--soft);
+    border-radius: 12px;
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.link-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.link-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.link-category {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+/* EMPTY STATE */
+
+.empty {
+    text-align: center;
+    padding: 55px 20px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    grid-column: 1 / -1;
+}
+
+.empty-icon {
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+
+.empty h3 {
+    margin-bottom: 9px;
+}
+
+.empty p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+}
+
+footer strong {
+    color: var(--accent);
+}
+
+/* MOBILE */
+
+@media(max-width: 650px) {
+    header {
+        padding: 12px 5%;
+    }
+
+    .logo {
+        font-size: 16px;
+    }
+
+    nav a:not(.home-link) {
+        display: none;
+    }
+
+    main {
+        padding: 30px 16px;
+    }
+
+    .links-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <a href="../" class="logo">
+        Handy Tools <span>& Links.</span>
+    </a>
+
+    <nav>
+        <a href="../" class="home-link">← Home</a>
+        <a href="#links">Links</a>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()"
+            id="themeButton"
+            aria-label="Toggle theme">
+            🌙
+        </button>
+    </nav>
+
+</header>
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="tag">
+            ✦ USEFUL WEBSITES
+        </div>
+
+        <h1>Handy Links</h1>
+
+        <p>
+            Discover and organize useful websites
+            and online resources, all in one place.
+        </p>
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+            <span>⌕</span>
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Search useful links..."
+                oninput="renderLinks()">
+        </div>
+
+    </section>
+
+    <!-- LINKS -->
+
+    <section id="links">
+
+        <h2 class="section-title">
+            Explore links
+        </h2>
+
+        <p class="section-description">
+            A collection of useful tools and resources.
+        </p>
+
+        <div class="categories" id="categories"></div>
+
+        <div class="links-grid" id="linksGrid"></div>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        Made with ✦ by
+        <strong>Handy Tools and Links</strong>
+    </p>
+
+    <p style="margin-top:8px">
+        Handy Links · Useful websites in one place.
+    </p>
+
+</footer>
+
+<script>
+
+// LINKS
+
+const links = [
+
+    {
+        name: "Epson Printer Configuration",
+        icon: "🖨️",
+        category: "For Epson printers",
+        description: "A useful Epson printer tool.",
+        url: "https://github.com/Ircama/epson_print_conf"
+    },
+
+    {
+        name: "AntiMicroX",
+        icon: "🎮",
+        category: "Handy for controller remapping",
+        description: "Remap and configure controller buttons.",
+        url: "https://github.com/AntiMicroX/antimicrox"
+    },
+
+    {
+        name: "Blender",
+        icon: "🧊",
+        category: "3D modeling if you can use it",
+        description: "A powerful 3D modeling and creation tool.",
+        url: "https://github.com/blender/blender"
+    },
+
+    {
+        name: "PowerBTRemover",
+        icon: "🔵",
+        category: "Handy if you have a problematic Bluetooth device",
+        description: "A tool for dealing with Bluetooth device problems.",
+        url: "https://github.com/lflfm/powerBTremover"
+    },
+
+    {
+        name: "Open Video Editor",
+        icon: "🎬",
+        category: "Handy for video editing on Android",
+        description: "An open-source Android video editor.",
+        url: "https://github.com/devhyper/open-video-editor"
+    },
+
+    {
+        name: "PeaZip",
+        icon: "📦",
+        category: "Archiving",
+        description: "Create and extract archives.",
+        url: "https://github.com/peazip/PeaZip"
+    },
+
+    {
+        name: "VTracer",
+        icon: "🎨",
+        category: "Nice SVG art maker",
+        description: "Convert images into SVG artwork.",
+        url: "https://github.com/visioncortex/vtracer"
+    }
+
+];
+
+// GET CATEGORIES FROM LINKS
+
+const categories = [
+    "All",
+    ...new Set(links.map(link => link.category))
+];
+
+let activeCategory = "All";
+
+// RENDER CATEGORIES
+
+function renderCategories() {
+
+    document.getElementById("categories").innerHTML =
+        categories.map((category, index) => `
+            <button
+                class="category ${
+                    activeCategory === category ? "active" : ""
+                }"
+                onclick="setCategory(${index})">
+                ${category}
+            </button>
+        `).join("");
+
+}
+
+// CHANGE CATEGORY
+
+function setCategory(index) {
+
+    activeCategory = categories[index];
+
+    renderCategories();
+    renderLinks();
+
+}
+
+// RENDER LINKS
+
+function renderLinks() {
+
+    const query = document
+        .getElementById("search")
+        .value.toLowerCase();
+
+    const filtered = links.filter(link => {
+
+        const categoryMatch =
+            activeCategory === "All" ||
+            link.category === activeCategory;
+
+        const searchMatch =
+            link.name.toLowerCase().includes(query) ||
+            link.description.toLowerCase().includes(query) ||
+            link.category.toLowerCase().includes(query);
+
+        return categoryMatch && searchMatch;
+
+    });
+
+    const grid = document.getElementById("linksGrid");
+
+    if (filtered.length === 0) {
+
+        grid.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🔗</div>
+                <h3>No links found</h3>
+                <p>
+                    Try another search or choose a different category.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    grid.innerHTML = filtered.map(link => `
+
+        <a
+            href="${link.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-card">
+
+            <div class="link-icon">${link.icon}</div>
+
+            <h3>${link.name}</h3>
+
+            <p>${link.description}</p>
+
+            <span class="link-category">
+                ${link.category} →
+            </span>
+
+        </a>
+
+    `).join("");
+
+}
+
+// DARK MODE
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    document.getElementById("themeButton").textContent =
+        isDark ? "☀️" : "🌙";
+
+    localStorage.setItem(
+        "handy-tools-theme",
+        isDark ? "dark" : "light"
+    );
+
+}
+
+// LOAD SAVED THEME
+
+if (
+    localStorage.getItem("handy-tools-theme") === "dark"
+) {
+
+    document.body.classList.add("dark");
+
+    document.getElementById("themeButton").textContent =
+        "☀️";
+
+}
+
+// INITIALIZE
+
+renderCategories();
+renderLinks();
+
+</script>
+
+</body>
+</html>

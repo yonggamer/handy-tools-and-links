@@ -1,10 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Handy Tools and Links</title>
 
 <style>
@@ -204,6 +202,7 @@ main {
     border-radius: 14px;
     text-decoration: none;
     transition: 0.2s;
+    margin-bottom: 12px;
 }
 
 .tool-button:hover {
@@ -283,10 +282,7 @@ footer strong {
 
 <body>
 
-<!-- HEADER -->
-
 <header>
-
     <a href="#" class="logo">
         <div class="logo-icon">✦</div>
         Handy Tools and Links
@@ -294,28 +290,20 @@ footer strong {
 
     <nav>
         <a href="#home">Home</a>
-
         <button
             class="theme-btn"
             onclick="toggleTheme()"
             id="themeButton"
-            aria-label="Toggle dark mode"
-        >
+            aria-label="Toggle dark mode">
             🌙
         </button>
     </nav>
-
 </header>
 
-<!-- MAIN CONTENT -->
-
 <main>
-
     <section class="hero" id="home">
 
-        <div class="tag">
-            ✦ YOUR DIGITAL TOOLBOX
-        </div>
+        <div class="tag">✦ YOUR DIGITAL TOOLBOX</div>
 
         <h1>
             Everything useful.<br>
@@ -328,29 +316,21 @@ footer strong {
             useful tools and websites.
         </p>
 
-        <!-- SEARCH BAR -->
-
         <div class="search-box">
             <span>⌕</span>
-
             <input
                 type="search"
                 placeholder="Search for tools and websites..."
-                id="searchInput"
-            >
+                id="searchInput">
         </div>
-
-        <!-- TOOLS -->
 
         <section class="tools-section">
 
             <h2 class="tools-heading">🧰 Available tools</h2>
 
-            <a
-                href="tools/md%20helper"
-                class="tool-button"
-            >
+            <!-- MD HELPER -->
 
+            <a href="tools/md%20helper" class="tool-button">
                 <div class="tool-icon">📝</div>
 
                 <div class="tool-info">
@@ -359,19 +339,26 @@ footer strong {
                 </div>
 
                 <span class="arrow">↗</span>
+            </a>
 
+            <!-- HANDY LINKS -->
+
+            <a href="links/handy%20links" class="tool-button">
+                <div class="tool-icon">🔗</div>
+
+                <div class="tool-info">
+                    <h3>Handy Links</h3>
+                    <p>Discover useful websites and online resources</p>
+                </div>
+
+                <span class="arrow">↗</span>
             </a>
 
         </section>
-
     </section>
-
 </main>
 
-<!-- FOOTER -->
-
 <footer>
-
     <p>
         Made with ✦ by
         <strong>Handy Tools and Links</strong>
@@ -380,17 +367,12 @@ footer strong {
     <p style="margin-top:8px">
         Your digital toolbox. Everything in one place.
     </p>
-
 </footer>
 
-<!-- JAVASCRIPT -->
-
 <script>
-
 // DARK MODE
 
 function toggleTheme() {
-
     document.body.classList.toggle("dark");
 
     const isDark =
@@ -407,17 +389,12 @@ function toggleTheme() {
 
 // LOAD SAVED THEME
 
-if (
-    localStorage.getItem("handy-tools-theme") === "dark"
-) {
-
+if (localStorage.getItem("handy-tools-theme") === "dark") {
     document.body.classList.add("dark");
 
     document.getElementById("themeButton").textContent =
         "☀️";
-
 }
-
 </script>
 
 </body>
