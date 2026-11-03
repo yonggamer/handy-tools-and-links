@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Getting Full Java 17 Support for Morphe Desktop</title>
+
+<style>
+:root {
+    --bg: #f5f7fc;
+    --card: #ffffff;
+    --text: #182033;
+    --muted: #788398;
+    --border: #e6eaf1;
+    --accent: #635bff;
+    --accent-light: #eeedff;
+    --success: #16865b;
+    --success-light: #e6f7ef;
+    --warning: #bd801d;
+    --warning-light: #fff4df;
+}
+
+.dark {
+    --bg: #101522;
+    --card: #1a2232;
+    --text: #f1f4fa;
+    --muted: #9ba7ba;
+    --border: #30394b;
+    --accent: #a29bff;
+    --accent-light: #29274c;
+    --success: #55d6a0;
+    --success-light: #173c31;
+    --warning: #edbd65;
+    --warning-light: #40331e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: 0.25s;
+}
+
+/* HEADER */
+
+header {
+    min-height: 75px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 7%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.logo-icon {
+    background: var(--accent);
+    color: white;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+.theme-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* MAIN */
+
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 950px;
+    margin: auto;
+    padding: 55px 24px;
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 30px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    letter-spacing: -1.5px;
+    line-height: 1.2;
+    margin-bottom: 18px;
+}
+
+.hero h1 span {
+    color: var(--accent);
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 680px;
+    margin: auto;
+}
+
+/* STATUS */
+
+.status {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: var(--warning-light);
+    color: var(--warning);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* CONTENT CARDS */
+
+.content-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 28px;
+    margin-bottom: 20px;
+}
+
+.content-card h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.content-card h3 {
+    font-size: 15px;
+    margin: 22px 0 10px;
+}
+
+.content-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.content-card ul {
+    padding-left: 22px;
+    color: var(--muted);
+    line-height: 2;
+    font-size: 14px;
+}
+
+/* ARCHITECTURE TABLE */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+th, td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    background: var(--bg);
+}
+
+td {
+    color: var(--text);
+}
+
+.result {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.result.full {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.result.partial {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+/* INFO GRID */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.info-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 17px;
+}
+
+.info-item strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.info-item span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* SOURCE LINKS */
+
+.source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.source-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.source-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.source-link small {
+    display: block;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.source-link .arrow {
+    color: var(--accent);
+    font-size: 18px;
+}
+
+/* BACK BUTTON */
+
+.back-button {
+    display: inline-block;
+    padding: 12px 17px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.back-button:hover {
+    opacity: 0.85;
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+footer strong {
+    color: var(--accent);
+}
+
+/* MOBILE */
+
+@media(max-width: 600px) {
+    header {
+        padding: 12px 5%;
+    }
+
+    .logo {
+        font-size: 15px;
+    }
+
+    nav a {
+        display: none;
+    }
+
+    main {
+        padding: 40px 16px;
+    }
+
+    .content-card {
+        padding: 21px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <a href="../../" class="logo">
+        <div class="logo-icon">✦</div>
+        Handy Tools and Links
+    </a>
+
+    <nav>
+        <a href="../../">Home</a>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()"
+            id="themeButton"
+            aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </nav>
+
+</header>
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="tag">
+            🧪 EXPERIMENT
+        </div>
+
+        <h1>
+            Getting Full Java 17 Support
+            <span>for Morphe Desktop</span>
+        </h1>
+
+        <p>
+            Investigating and improving Java 17 compatibility
+            for Morphe Desktop, with a focus on getting both
+            the graphical interface and command-line interface
+            working across different Java architectures.
+        </p>
+
+        <span class="status">
+            ⚠ Partially supported
+        </span>
+
+    </section>
+
+    <!-- ABOUT -->
+
+    <section class="content-card">
+
+        <h2>📖 About this experiment</h2>
+
+        <p>
+            This experiment investigates the current Java 17
+            compatibility of Morphe Desktop.
+        </p>
+
+        <p style="margin-top:12px">
+            The main objective is to achieve full Java 17
+            compatibility for both 64-bit and 32-bit Java
+            Runtime Environments (JREs).
+        </p>
+
+        <p style="margin-top:12px">
+            At the moment, Java 17 support is only partial
+            overall. The 64-bit JRE already works with both
+            the graphical user interface (GUI) and the
+            command-line interface (CLI), while the 32-bit
+            JRE currently only works with the CLI.
+        </p>
+
+    </section>
+
+    <!-- CURRENT STATUS -->
+
+    <section class="content-card">
+
+        <h2>📊 Current status of the experiment</h2>
+
+        <p>
+            The following results represent the current
+            compatibility tests.
+        </p>
+
+        <div class="table-wrapper" style="margin-top:20px">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Java 17 JRE</th>
+                        <th>GUI</th>
+                        <th>CLI</th>
+                        <th>Overall</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td><strong>64-bit</strong></td>
+
+                        <td>
+                            <span class="result full">
+                                Working
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="result full">
+                                Working
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="result full">
+                                Full support
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>32-bit</strong></td>
+
+                        <td>
+                            <span class="result partial">
+                                Not working
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="result full">
+                                Working
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="result partial">
+                                Partial support
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>What this means</h3>
+
+        <ul>
+            <li>
+                64-bit Java 17: Both GUI and CLI work.
+            </li>
+
+            <li>
+                32-bit Java 17: Only CLI works.
+            </li>
+
+            <li>
+                Full 32-bit GUI compatibility remains a goal.
+            </li>
+        </ul>
+
+    </section>
+
+    <!-- GOALS -->
+
+    <section class="content-card">
+
+        <h2>🎯 Goals</h2>
+
+        <ul>
+            <li>
+                Achieve full Java 17 compatibility.
+            </li>
+
+            <li>
+                Get the graphical interface working with
+                32-bit Java 17.
+            </li>
+
+            <li>
+                Maintain 64-bit Java 17 GUI and CLI support.
+            </li>
+
+            <li>
+                Investigate architecture detection and
+                dependency compatibility.
+            </li>
+
+            <li>
+                Verify native libraries and bootstrap downloads.
+            </li>
+
+            <li>
+                Test the application on different Java runtimes.
+            </li>
+        </ul>
+
+    </section>
+
+    <!-- TECHNICAL INVESTIGATION -->
+
+    <section class="content-card">
+
+        <h2>🔍 Technical investigation</h2>
+
+        <p>
+            These four files in the Morphe Desktop repository
+            are the main files to investigate for changes
+            related to Java 17 and architecture compatibility.
+        </p>
+
+        <div class="source-list" style="margin-top:20px">
+
+            <a class="source-link"
+               href="https://github.com/MorpheApp/morphe-desktop/blob/dev/buildSrc/src/main/java/app/morphe/tasks/GenerateBootstrapConstantsTask.java"
+               target="_blank"
+               rel="noopener noreferrer">
+
+                <span>
+                    <strong>GenerateBootstrapConstantsTask.java</strong>
+                    <small>Bootstrap constants and native library hashes</small>
+                </span>
+
+                <span class="arrow">↗</span>
+
+            </a>
+
+            <a class="source-link"
+               href="https://github.com/MorpheApp/morphe-desktop/blob/dev/gradle/libs.versions.toml"
+               target="_blank"
+               rel="noopener noreferrer">
+
+                <span>
+                    <strong>libs.versions.toml</strong>
+                    <small>Dependency versions and Compose Desktop libraries</small>
+                </span>
+
+                <span class="arrow">↗</span>
+
+            </a>
+
+            <a class="source-link"
+               href="https://github.com/MorpheApp/morphe-desktop/blob/dev/src/main/kotlin/app/morphe/engine/PlatformDetector.kt"
+               target="_blank"
+               rel="noopener noreferrer">
+
+                <span>
+                    <strong>PlatformDetector.kt</strong>
+                    <small>Operating system and architecture detection</small>
+                </span>
+
+                <span class="arrow">↗</span>
+
+            </a>
+
+            <a class="source-link"
+               href="https://github.com/MorpheApp/morphe-desktop/blob/dev/src/test/kotlin/app/morphe/engine/BootstrapDownloaderVerificationTest.kt"
+               target="_blank"
+               rel="noopener noreferrer">
+
+                <span>
+                    <strong>BootstrapDownloaderVerificationTest.kt</strong>
+                    <small>Bootstrap verification and native library tests</small>
+                </span>
+
+                <span class="arrow">↗</span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- CODE FINDINGS -->
+
+    <section class="content-card">
+
+        <h2>💻 Findings from the current source code</h2>
+
+        <h3>1. PlatformDetector.kt</h3>
+
+        <p>
+            The current platform detector recognizes x64
+            and ARM64 architectures. It does not explicitly
+            recognize x86/32-bit architecture.
+        </p>
+
+        <h3>2. GenerateBootstrapConstantsTask.java</h3>
+
+        <p>
+            The bootstrap generation task creates SHA-256
+            hashes for native dependencies and Skiko runtime
+            artifacts for six platform targets:
+            macOS x64, macOS ARM64, Linux x64, Linux ARM64,
+            Windows x64 and Windows ARM64.
+        </p>
+
+        <h3>3. libs.versions.toml</h3>
+
+        <p>
+            This file defines dependency versions, including
+            Compose Desktop and other libraries. It is worth
+            checking whether the selected dependency versions
+            and available native artifacts meet the desired
+            Java 17 compatibility requirements.
+        </p>
+
+        <h3>4. BootstrapDownloaderVerificationTest.kt</h3>
+
+        <p>
+            The existing tests verify that bootstrap constants
+            are generated, hashes have the expected format,
+            and Skiko/Skia classes can be loaded. They also
+            check OSHI initialization.
+        </p>
+
+        <p style="margin-top:12px">
+            These tests do not currently establish that the
+            32-bit graphical interface works. Additional
+            architecture-specific testing would be needed.
+        </p>
+
+    </section>
+
+    <!-- PROGRESS -->
+
+    <section class="content-card">
+
+        <h2>📝 Progress and next steps</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>64-bit CLI</strong>
+                <span>Working</span>
+            </div>
+
+            <div class="info-item">
+                <strong>64-bit GUI</strong>
+                <span>Working</span>
+            </div>
+
+            <div class="info-item">
+                <strong>32-bit CLI</strong>
+                <span>Working</span>
+            </div>
+
+            <div class="info-item">
+                <strong>32-bit GUI</strong>
+                <span>Still needs work</span>
+            </div>
+
+        </div>
+
+        <h3>Next steps</h3>
+
+        <ul>
+            <li>
+                Investigate why the 32-bit GUI does not work.
+            </li>
+
+            <li>
+                Check whether the necessary native dependencies
+                support 32-bit Java.
+            </li>
+
+            <li>
+                Investigate platform detection and bootstrap
+                dependency resolution.
+            </li>
+
+            <li>
+                Add dedicated 32-bit compatibility tests.
+            </li>
+
+            <li>
+                Retest the GUI and CLI after every change.
+            </li>
+        </ul>
+
+    </section>
+
+    <!-- PROJECT INFORMATION -->
+
+    <section class="content-card">
+
+        <h2>⚙️ Experiment information</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>Project</strong>
+                <span>Morphe Desktop</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Target Java version</strong>
+                <span>Java 17</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Experiment type</strong>
+                <span>Compatibility</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Repository branch</strong>
+                <span>dev</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Current status</strong>
+                <span>Partially supported</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Main objective</strong>
+                <span>Full 32-bit and 64-bit support</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <a href="../experiments.html" class="back-button">
+        ← Back to experiments
+    </a>
+
+</main>
+
+<footer>
+
+    <p>
+        Made with ✦ by
+        <strong>Handy Tools and Links</strong>
+    </p>
+
+    <p style="margin-top:8px">
+        Experimental projects. New ideas. More to come.
+    </p>
+
+</footer>
+
+<script>
+
+// DARK MODE
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    document.getElementById("themeButton").textContent =
+        isDark ? "☀️" : "🌙";
+
+    localStorage.setItem(
+        "handy-tools-theme",
+        isDark ? "dark" : "light"
+    );
+
+}
+
+// LOAD SAVED THEME
+
+if (
+    localStorage.getItem("handy-tools-theme") === "dark"
+) {
+
+    document.body.classList.add("dark");
+
+    document.getElementById("themeButton").textContent =
+        "☀️";
+
+}
+
+</script>
+
+</body>
+</html>

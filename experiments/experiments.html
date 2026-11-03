@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Experiments - Handy Tools and Links</title>
+
+<style>
+:root {
+    --bg: #f5f7fc;
+    --card: #ffffff;
+    --text: #182033;
+    --muted: #788398;
+    --border: #e6eaf1;
+    --accent: #635bff;
+    --accent-light: #eeedff;
+}
+
+.dark {
+    --bg: #101522;
+    --card: #1a2232;
+    --text: #f1f4fa;
+    --muted: #9ba7ba;
+    --border: #30394b;
+    --accent: #a29bff;
+    --accent-light: #29274c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: 0.25s;
+}
+
+/* HEADER */
+
+header {
+    min-height: 75px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 7%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.logo-icon {
+    background: var(--accent);
+    color: white;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+.theme-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* MAIN */
+
+main {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 55px 24px;
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 30px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 6vw, 56px);
+    letter-spacing: -2px;
+    margin-bottom: 18px;
+}
+
+.hero h1 span {
+    color: var(--accent);
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 570px;
+    margin: auto;
+}
+
+/* SEARCH */
+
+.search-box {
+    max-width: 570px;
+    margin: 30px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+}
+
+.search-box span {
+    font-size: 22px;
+    color: var(--muted);
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 15px;
+}
+
+/* EXPERIMENTS */
+
+.section-heading {
+    font-size: 21px;
+    margin-bottom: 20px;
+}
+
+.experiments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 17px;
+}
+
+.experiment-card {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: 0.2s;
+}
+
+.experiment-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99,91,255,0.08);
+}
+
+.experiment-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: var(--accent-light);
+    border-radius: 12px;
+    font-size: 24px;
+    margin-bottom: 17px;
+}
+
+.experiment-card h3 {
+    font-size: 16px;
+    margin-bottom: 9px;
+}
+
+.experiment-card p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 17px;
+}
+
+.category {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 35px;
+    display: none;
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+footer strong {
+    color: var(--accent);
+}
+
+/* MOBILE */
+
+@media(max-width: 600px) {
+    header {
+        padding: 12px 5%;
+    }
+
+    .logo {
+        font-size: 15px;
+    }
+
+    nav a {
+        display: none;
+    }
+
+    main {
+        padding: 40px 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <a href="../" class="logo">
+        <div class="logo-icon">✦</div>
+        Handy Tools and Links
+    </a>
+
+    <nav>
+        <a href="../">Home</a>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()"
+            id="themeButton"
+            aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </nav>
+
+</header>
+
+<!-- MAIN -->
+
+<main>
+
+    <section class="hero">
+
+        <div class="tag">
+            🧪 EXPERIMENTAL ZONE
+        </div>
+
+        <h1>
+            Try something <span>new.</span>
+        </h1>
+
+        <p>
+            Welcome to the experiments page.
+            A place for unfinished projects, prototypes,
+            interesting ideas and things that are still being tested.
+        </p>
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+            <span>⌕</span>
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search experiments..."
+                oninput="searchExperiments()">
+        </div>
+
+    </section>
+
+    <!-- EXPERIMENT LIST -->
+
+    <section>
+
+        <h2 class="section-heading">
+            🧪 Current experiments
+        </h2>
+
+        <div
+            class="experiments-grid"
+            id="experimentsGrid">
+        </div>
+
+        <div class="empty" id="emptyMessage">
+            No experiments found.
+        </div>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        Made with ✦ by
+        <strong>Handy Tools and Links</strong>
+    </p>
+
+    <p style="margin-top:8px">
+        Experimental projects. New ideas. More to come.
+    </p>
+
+</footer>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+// DARK MODE
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    document.getElementById("themeButton").textContent =
+        isDark ? "☀️" : "🌙";
+
+    localStorage.setItem(
+        "handy-tools-theme",
+        isDark ? "dark" : "light"
+    );
+}
+
+// LOAD SAVED THEME
+
+if (
+    localStorage.getItem("handy-tools-theme") === "dark"
+) {
+
+    document.body.classList.add("dark");
+
+    document.getElementById("themeButton").textContent =
+        "☀️";
+
+}
+
+// EXPERIMENTS
+
+let allExperiments = [];
+
+async function loadExperiments() {
+
+    const grid =
+        document.getElementById("experimentsGrid");
+
+    const empty =
+        document.getElementById("emptyMessage");
+
+    try {
+
+        const response = await fetch(
+            "experiments.json?t=" + Date.now()
+        );
+
+        if (!response.ok) {
+            throw new Error("Could not load experiments.");
+        }
+
+        allExperiments = await response.json();
+
+        renderExperiments(allExperiments);
+
+    } catch (error) {
+
+        console.error(error);
+
+        grid.textContent =
+            "Unable to load experiments. Please try again later.";
+
+        empty.style.display = "none";
+
+    }
+}
+
+// RENDER EXPERIMENTS
+
+function renderExperiments(experiments) {
+
+    const grid =
+        document.getElementById("experimentsGrid");
+
+    const empty =
+        document.getElementById("emptyMessage");
+
+    grid.innerHTML = "";
+
+    if (experiments.length === 0) {
+
+        empty.textContent = "No experiments available yet.";
+        empty.style.display = "block";
+
+        return;
+    }
+
+    empty.style.display = "none";
+
+    experiments.forEach(experiment => {
+
+        const card = document.createElement("a");
+
+        card.className = "experiment-card";
+
+        card.href =
+            "current%20experiments/" +
+            encodeURIComponent(experiment.file);
+
+        const icon = document.createElement("div");
+
+        icon.className = "experiment-icon";
+        icon.textContent = "🧪";
+
+        const title = document.createElement("h3");
+
+        title.textContent = experiment.name;
+
+        const description = document.createElement("p");
+
+        description.textContent =
+            "An experimental project. Click to open.";
+
+        const category = document.createElement("span");
+
+        category.className = "category";
+        category.textContent = "Experiment";
+
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(category);
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+// SEARCH
+
+function searchExperiments() {
+
+    const query = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const filtered = allExperiments.filter(experiment => {
+
+        return (
+            experiment.name.toLowerCase().includes(query) ||
+            experiment.file.toLowerCase().includes(query)
+        );
+
+    });
+
+    renderExperiments(filtered);
+
+}
+
+// LOAD
+
+loadExperiments();
+
+</script>
+
+</body>
+</html>
