@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Handy Tools and Links</title>
+
+<style>
+:root {
+    --bg: #f5f7fc;
+    --card: #ffffff;
+    --text: #182033;
+    --muted: #788398;
+    --border: #e6eaf1;
+    --accent: #635bff;
+    --accent-light: #eeedff;
+}
+
+.dark {
+    --bg: #101522;
+    --card: #1a2232;
+    --text: #f1f4fa;
+    --muted: #9ba7ba;
+    --border: #30394b;
+    --accent: #a29bff;
+    --accent-light: #29274c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+
+header {
+    min-height: 75px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 7%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.logo-icon {
+    background: var(--accent);
+    color: white;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+.theme-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* MAIN */
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+/* HERO */
+
+.hero {
+    text-align: center;
+    max-width: 750px;
+    width: 100%;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 30px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 6vw, 60px);
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    line-height: 1.15;
+}
+
+.hero h1 span {
+    color: var(--accent);
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 540px;
+    margin: auto;
+}
+
+/* SEARCH */
+
+.search-box {
+    max-width: 570px;
+    margin: 35px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 17px 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+}
+
+.search-box span {
+    font-size: 22px;
+    color: var(--muted);
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 15px;
+}
+
+/* TOOLS */
+
+.tools-section {
+    max-width: 570px;
+    margin: 40px auto 0;
+    text-align: left;
+}
+
+.tools-heading {
+    font-size: 17px;
+    margin-bottom: 16px;
+}
+
+.tool-button {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 17px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.tool-button:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99,91,255,0.08);
+}
+
+.tool-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    background: var(--accent-light);
+    border-radius: 11px;
+    font-size: 21px;
+}
+
+.tool-info {
+    flex: 1;
+}
+
+.tool-info h3 {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.tool-info p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.arrow {
+    color: var(--accent);
+    font-size: 20px;
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+footer strong {
+    color: var(--accent);
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+    header {
+        padding: 12px 5%;
+    }
+
+    .logo {
+        font-size: 15px;
+    }
+
+    nav a {
+        display: none;
+    }
+
+    .hero h1 {
+        letter-spacing: -1px;
+    }
+
+    main {
+        padding: 45px 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <a href="#" class="logo">
+        <div class="logo-icon">✦</div>
+        Handy Tools and Links
+    </a>
+
+    <nav>
+        <a href="#home">Home</a>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()"
+            id="themeButton"
+            aria-label="Toggle dark mode"
+        >
+            🌙
+        </button>
+    </nav>
+
+</header>
+
+<!-- MAIN CONTENT -->
+
+<main>
+
+    <section class="hero" id="home">
+
+        <div class="tag">
+            ✦ YOUR DIGITAL TOOLBOX
+        </div>
+
+        <h1>
+            Everything useful.<br>
+            <span>One place.</span>
+        </h1>
+
+        <p>
+            Welcome to Handy Tools and Links.
+            A simple place to discover, organize and access
+            useful tools and websites.
+        </p>
+
+        <!-- SEARCH BAR -->
+
+        <div class="search-box">
+            <span>⌕</span>
+
+            <input
+                type="search"
+                placeholder="Search for tools and websites..."
+                id="searchInput"
+            >
+        </div>
+
+        <!-- TOOLS -->
+
+        <section class="tools-section">
+
+            <h2 class="tools-heading">🧰 Available tools</h2>
+
+            <a
+                href="tools/md%20helper.html"
+                class="tool-button"
+            >
+
+                <div class="tool-icon">📝</div>
+
+                <div class="tool-info">
+                    <h3>MD Helper</h3>
+                    <p>Markdown helper tool</p>
+                </div>
+
+                <span class="arrow">↗</span>
+
+            </a>
+
+        </section>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        Made with ✦ by
+        <strong>Handy Tools and Links</strong>
+    </p>
+
+    <p style="margin-top:8px">
+        Your digital toolbox. Everything in one place.
+    </p>
+
+</footer>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+// DARK MODE
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const isDark =
+        document.body.classList.contains("dark");
+
+    document.getElementById("themeButton").textContent =
+        isDark ? "☀️" : "🌙";
+
+    localStorage.setItem(
+        "handy-tools-theme",
+        isDark ? "dark" : "light"
+    );
+}
+
+// LOAD SAVED THEME
+
+if (
+    localStorage.getItem("handy-tools-theme") === "dark"
+) {
+
+    document.body.classList.add("dark");
+
+    document.getElementById("themeButton").textContent =
+        "☀️";
+
+}
+
+</script>
+
+</body>
+</html>

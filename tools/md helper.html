@@ -1,0 +1,1058 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MD Helper - Handy Tools and Links</title>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+:root {
+  --bg: #f5f7fc;
+  --surface: #ffffff;
+  --text: #182033;
+  --muted: #788398;
+  --border: #e6eaf1;
+  --accent: #635bff;
+  --soft: #eeedff;
+}
+
+.dark {
+  --bg: #101522;
+  --surface: #1a2232;
+  --text: #f1f4fa;
+  --muted: #9ba7ba;
+  --border: #30394b;
+  --accent: #a29bff;
+  --soft: #29274c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
+  transition: .2s;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* HEADER */
+
+header {
+  min-height: 70px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nav a:hover {
+  color: var(--accent);
+}
+
+.btn {
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.primary {
+  background: var(--accent);
+  color: white;
+  border: 0;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+/* MAIN */
+
+main {
+  max-width: 1250px;
+  margin: auto;
+  padding: 45px 24px;
+}
+
+/* HERO */
+
+.hero {
+  text-align: center;
+  margin: 15px auto 45px;
+  max-width: 650px;
+}
+
+.tag {
+  display: inline-block;
+  background: var(--soft);
+  color: var(--accent);
+  padding: 7px 13px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: clamp(34px, 5vw, 54px);
+  letter-spacing: -2px;
+  margin: 17px 0;
+}
+
+.hero p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.search {
+  width: min(100%, 450px);
+  padding: 14px 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  margin-top: 15px;
+  outline: none;
+}
+
+.search:focus {
+  border-color: var(--accent);
+}
+
+/* SECTIONS */
+
+.section-title {
+  font-size: 21px;
+  margin-bottom: 18px;
+}
+
+/* CATEGORIES */
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+
+.category {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  padding: 9px 15px;
+  border-radius: 30px;
+  transition: .2s;
+}
+
+.category:hover {
+  border-color: var(--accent);
+}
+
+.category.active {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* TEMPLATE CARDS */
+
+.templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+  margin-bottom: 55px;
+}
+
+.template {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 20px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.template:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.template .emoji {
+  font-size: 26px;
+}
+
+.template h3 {
+  font-size: 16px;
+  margin: 13px 0 7px;
+}
+
+.template p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.template small {
+  color: var(--accent);
+}
+
+/* EDITOR */
+
+.editor {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.editor-head {
+  padding: 15px 19px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.editor-head strong {
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  font-size: 12px;
+  padding: 8px 11px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 440px;
+}
+
+.panel {
+  min-width: 0;
+}
+
+.panel + .panel {
+  border-left: 1px solid var(--border);
+}
+
+.panel-title {
+  padding: 12px 17px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+textarea {
+  width: 100%;
+  height: 440px;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  padding: 20px;
+  background: var(--surface);
+  color: var(--text);
+  font: 13px/1.8 monospace;
+}
+
+.preview {
+  padding: 20px;
+  height: 440px;
+  overflow: auto;
+  line-height: 1.7;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.preview h1,
+.preview h2,
+.preview h3 {
+  letter-spacing: -.5px;
+}
+
+.preview h1,
+.preview h2 {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 9px;
+}
+
+.preview code {
+  background: var(--soft);
+  padding: 3px 5px;
+  border-radius: 4px;
+}
+
+.preview pre {
+  background: var(--bg);
+  padding: 15px;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.preview pre code {
+  background: none;
+}
+
+.preview table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.preview td,
+.preview th {
+  border: 1px solid var(--border);
+  padding: 9px;
+}
+
+.preview th {
+  background: var(--bg);
+}
+
+.preview blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 15px;
+  color: var(--muted);
+}
+
+.preview img {
+  max-width: 100%;
+}
+
+.preview a {
+  color: var(--accent);
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+footer strong {
+  color: var(--accent);
+}
+
+/* MOBILE */
+
+@media(max-width: 700px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .panel + .panel {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav a:not(.back-link) {
+    display: none;
+  }
+
+  main {
+    padding: 30px 16px;
+  }
+
+  header {
+    padding: 0 5%;
+  }
+
+  .templates {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .editor-head {
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+  <div class="logo">
+    MD <span>Helper</span>.
+  </div>
+
+  <nav class="nav">
+    <a href="../index.html" class="back-link">← Home</a>
+    <a href="#templates">Templates</a>
+    <a href="#editor">Editor</a>
+
+    <a href="https://github.github.com/gfm/"
+       target="_blank"
+       rel="noopener noreferrer">
+       GFM Guide ↗
+    </a>
+
+    <button class="btn" onclick="toggleTheme()" id="themeButton">
+      🌙
+    </button>
+  </nav>
+
+</header>
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+  <span class="tag">MARKDOWN TOOL</span>
+
+  <h1>
+    Markdown made simple.
+  </h1>
+
+  <p>
+    Create, edit and preview Markdown documents.
+    Choose a template, customize it and download
+    your finished Markdown file.
+  </p>
+
+  <input
+    class="search"
+    id="search"
+    placeholder="⌕ Search templates..."
+    oninput="renderTemplates()"
+  >
+
+</section>
+
+<!-- TEMPLATES -->
+
+<section id="templates">
+
+  <h2 class="section-title">
+    Explore templates
+  </h2>
+
+  <div class="categories" id="categories"></div>
+
+  <div class="templates" id="templatesGrid"></div>
+
+</section>
+
+<!-- EDITOR -->
+
+<section id="editor">
+
+  <h2 class="section-title">
+    Markdown playground
+  </h2>
+
+  <div class="editor">
+
+    <div class="editor-head">
+
+      <strong>✎ Markdown editor</strong>
+
+      <div class="actions">
+
+        <button class="btn" onclick="resetEditor()">
+          Reset
+        </button>
+
+        <button class="btn" onclick="copyMarkdown()">
+          Copy
+        </button>
+
+        <button class="btn primary" onclick="downloadMarkdown()">
+          ↓ Download .md
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="workspace">
+
+      <!-- SOURCE -->
+
+      <div class="panel">
+
+        <div class="panel-title">
+          MARKDOWN SOURCE
+        </div>
+
+        <textarea
+          id="source"
+          spellcheck="false"
+          oninput="updatePreview()"
+        ># My Awesome Project
+
+A brief description of what this project does.
+
+## Features
+
+- Easy to use
+- Open source
+- Built with love
+
+## Installation
+
+\`\`\`bash
+npm install my-project
+\`\`\`
+
+## Usage
+
+\`\`\`javascript
+import { myProject } from 'my-project';
+myProject();
+\`\`\`
+
+## License
+
+MIT</textarea>
+
+      </div>
+
+      <!-- PREVIEW -->
+
+      <div class="panel">
+
+        <div class="panel-title">
+          LIVE PREVIEW
+        </div>
+
+        <div class="preview" id="preview"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+  Made with ✦ by <strong>Handy Tools and Links</strong>
+
+  <p style="margin-top:8px">
+    MD Helper · Markdown made simple.
+  </p>
+
+</footer>
+
+<script>
+
+// MARKDOWN TEMPLATES
+
+const templates = [
+
+{
+ name:"README.md",
+ icon:"📘",
+ category:"Projects",
+ desc:"A professional project introduction.",
+ content:`# Project Name
+
+A short description of your project.
+
+## Features
+- Feature one
+- Feature two
+- Feature three
+
+## Installation
+\`\`\`bash
+npm install project-name
+\`\`\`
+
+## Usage
+Describe how to use your project.
+
+## Contributing
+Contributions are welcome!
+
+## License
+MIT`
+},
+
+{
+ name:"CHANGELOG.md",
+ icon:"📋",
+ category:"Projects",
+ desc:"Document project versions and changes.",
+ content:`# Changelog
+
+All notable changes are documented here.
+
+## [1.0.0] - 2026-01-01
+
+### Added
+- Initial release
+- New features
+
+### Changed
+- Improved performance
+
+### Fixed
+- Bug fixes`
+},
+
+{
+ name:"CONTRIBUTING.md",
+ icon:"🤝",
+ category:"Documentation",
+ desc:"Help contributors get started.",
+ content:`# Contributing
+
+Thank you for considering contributing!
+
+## Getting Started
+1. Fork the repository.
+2. Clone your fork.
+3. Create a new branch.
+
+## Guidelines
+- Write clean code.
+- Add relevant tests.
+- Document your changes.
+
+## Pull Requests
+Submit a pull request with a clear description.`
+},
+
+{
+ name:"API Documentation",
+ icon:"⚙️",
+ category:"Documentation",
+ desc:"Document API endpoints and parameters.",
+ content:`# API Documentation
+
+## Authentication
+All requests require an API key.
+
+## GET /api/users
+
+Retrieve all users.
+
+### Parameters
+
+| Parameter | Type | Required |
+|---|---|---|
+| page | number | No |
+| limit | number | No |
+
+### Response
+\`\`\`json
+{
+  "users": [],
+  "total": 0
+}
+\`\`\``
+},
+
+{
+ name:"Bug Report",
+ icon:"🐛",
+ category:"Issues",
+ desc:"A structured GitHub bug report.",
+ content:`## Bug Description
+A clear description of the bug.
+
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '...'
+3. See error
+
+## Expected Behavior
+What should happen?
+
+## Actual Behavior
+What actually happens?
+
+## Environment
+- OS:
+- Browser:
+- Version:
+
+## Additional Context
+Any other relevant information.`
+},
+
+{
+ name:"Feature Request",
+ icon:"💡",
+ category:"Issues",
+ desc:"Suggest a new feature.",
+ content:`## Feature Summary
+Describe your proposed feature.
+
+## Problem
+What problem does this solve?
+
+## Proposed Solution
+Describe your ideal solution.
+
+## Alternatives
+Any alternatives considered?
+
+## Additional Context
+Screenshots, examples, or references.`
+},
+
+{
+ name:"Pull Request",
+ icon:"🔀",
+ category:"GitHub",
+ desc:"A clear and organized pull request.",
+ content:`## Summary
+Describe your changes.
+
+## Changes
+- Change one
+- Change two
+
+## Related Issues
+Closes #
+
+## Testing
+- [ ] Tests pass
+- [ ] Code reviewed
+- [ ] Documentation updated
+
+## Screenshots
+Add screenshots if applicable.`
+},
+
+{
+ name:"Project Roadmap",
+ icon:"🗺️",
+ category:"Projects",
+ desc:"Plan upcoming project milestones.",
+ content:`# Project Roadmap
+
+## 🚀 In Progress
+- [ ] Feature A
+- [ ] Feature B
+
+## 📅 Planned
+- [ ] Feature C
+- [ ] Feature D
+
+## ✅ Completed
+- [x] Initial release
+- [x] Core functionality
+
+## Future Ideas
+- More integrations
+- Performance improvements`
+},
+
+{
+ name:"Meeting Notes",
+ icon:"📝",
+ category:"Documentation",
+ desc:"Keep meetings organized.",
+ content:`# Meeting Notes
+
+**Date:** YYYY-MM-DD
+**Attendees:** Names
+
+## Agenda
+1. Topic one
+2. Topic two
+
+## Discussion
+Summarize important points.
+
+## Action Items
+- [ ] Task one — Owner
+- [ ] Task two — Owner
+
+## Next Meeting
+Date and time.`
+},
+
+{
+ name:"License Notice",
+ icon:"⚖️",
+ category:"Projects",
+ desc:"A simple license documentation page.",
+ content:`# License
+
+Copyright (c) 2026 Your Name
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.`
+}
+
+];
+
+// CATEGORIES
+
+const cats = [
+  "All",
+  "Projects",
+  "Documentation",
+  "Issues",
+  "GitHub"
+];
+
+let active = "All";
+
+function renderCategories() {
+
+  document.getElementById("categories").innerHTML =
+    cats.map((c, i) => `
+      <button
+        class="category ${active === c ? 'active' : ''}"
+        onclick="setCategory(${i})"
+      >
+        ${c}
+      </button>
+    `).join("");
+
+}
+
+function setCategory(i) {
+
+  active = cats[i];
+
+  renderCategories();
+  renderTemplates();
+
+}
+
+// RENDER TEMPLATES
+
+function renderTemplates() {
+
+  const q = document
+    .getElementById("search")
+    .value.toLowerCase();
+
+  const filtered = templates.filter(t =>
+    (active === "All" || t.category === active) &&
+    (
+      t.name.toLowerCase().includes(q) ||
+      t.desc.toLowerCase().includes(q)
+    )
+  );
+
+  document.getElementById("templatesGrid").innerHTML =
+    filtered.map(t => `
+      <div
+        class="template"
+        onclick="loadTemplate(${templates.indexOf(t)})"
+      >
+        <div class="emoji">${t.icon}</div>
+        <h3>${t.name}</h3>
+        <p>${t.desc}</p>
+        <small>${t.category} →</small>
+      </div>
+    `).join("") ||
+    "<p>No templates found.</p>";
+
+}
+
+// LOAD TEMPLATE
+
+function loadTemplate(i) {
+
+  const template = templates[i];
+
+  document.getElementById("source").value =
+    template.content;
+
+  updatePreview();
+
+  document.getElementById("editor").scrollIntoView({
+    behavior: "smooth"
+  });
+
+}
+
+// LIVE PREVIEW
+
+function updatePreview() {
+
+  const value =
+    document.getElementById("source").value;
+
+  document.getElementById("preview").innerHTML =
+    marked.parse(value);
+
+}
+
+// RESET EDITOR
+
+function resetEditor() {
+
+  document.getElementById("source").value =
+    "# Hello, Markdown!\n\nStart writing here...";
+
+  updatePreview();
+
+}
+
+// COPY MARKDOWN
+
+async function copyMarkdown() {
+
+  const value =
+    document.getElementById("source").value;
+
+  try {
+
+    await navigator.clipboard.writeText(value);
+
+    alert("Markdown copied!");
+
+  } catch(e) {
+
+    alert("Clipboard unavailable. Please copy manually.");
+
+  }
+
+}
+
+// DOWNLOAD MARKDOWN
+
+function downloadMarkdown() {
+
+  const value =
+    document.getElementById("source").value;
+
+  const blob = new Blob(
+    [value],
+    { type: "text/markdown" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "document.md";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+}
+
+// DARK MODE
+
+function toggleTheme() {
+
+  document.body.classList.toggle("dark");
+
+  const isDark =
+    document.body.classList.contains("dark");
+
+  document.getElementById("themeButton").textContent =
+    isDark ? "☀️" : "🌙";
+
+  localStorage.setItem(
+    "handy-tools-theme",
+    isDark ? "dark" : "light"
+  );
+
+}
+
+// LOAD SAVED THEME
+
+if (
+  localStorage.getItem("handy-tools-theme") === "dark"
+) {
+
+  document.body.classList.add("dark");
+
+  document.getElementById("themeButton").textContent =
+    "☀️";
+
+}
+
+// INITIALIZE
+
+marked.setOptions({
+  gfm: true,
+  breaks: false
+});
+
+renderCategories();
+renderTemplates();
+updatePreview();
+
+</script>
+
+</body>
+</html>
