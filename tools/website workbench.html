@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Website Workbench</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
@@ -208,32 +208,6 @@ h1 {
     padding:9px 15px;
     border-top:1px solid var(--border);
 }
-.context-menu {
-    display:none;
-    position:fixed;
-    z-index:99999;
-    min-width:190px;
-    padding:6px;
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    box-shadow:0 8px 30px rgba(0,0,0,.2);
-}
-.context-menu button {
-    display:block;
-    width:100%;
-    padding:11px;
-    border:0;
-    background:transparent;
-    color:var(--text);
-    text-align:left;
-    border-radius:6px;
-    font-size:13px;
-}
-.context-menu button:hover {
-    background:var(--soft);
-    color:var(--accent);
-}
 footer {
     text-align:center;
     padding:25px;
@@ -272,7 +246,6 @@ footer strong {color:var(--accent)}
 </header>
 
 <main>
-
 <section class="hero">
     <div class="tag">🛠️ WEBSITE DEVELOPMENT TOOL</div>
     <h1>Website Workbench</h1>
@@ -281,14 +254,13 @@ footer strong {color:var(--accent)}
 
 <div class="project-bar">
     <label for="projectName">PROJECT NAME</label>
-    <input id="projectName" value="My Website" placeholder="Enter project name">
+    <input id="projectName" value="My Website">
     <button class="btn" onclick="resetProject()">New project</button>
     <button class="btn" onclick="downloadCurrentFile()">↓ Download file</button>
     <button class="btn primary" onclick="exportProject()">📦 Export ZIP</button>
 </div>
 
 <section class="workspace">
-
     <aside class="sidebar">
         <div class="sidebar-heading">
             <strong>📁 Project files</strong>
@@ -301,7 +273,6 @@ footer strong {color:var(--accent)}
     </aside>
 
     <div class="editor-area">
-
         <section class="editor-card">
             <div class="editor-heading">
                 <strong id="editorTitle">index.html</strong>
@@ -321,24 +292,17 @@ footer strong {color:var(--accent)}
                     <button class="btn" onclick="openPreview()">↗ New tab</button>
                 </div>
             </div>
-
             <iframe id="websitePreview"
                 title="Website preview"
                 sandbox="allow-scripts allow-forms allow-modals allow-popups">
             </iframe>
+            <div class="status">
+                Right-click or long-press an element in the preview to edit it.
+            </div>
         </section>
-
     </div>
 </section>
 </main>
-
-<div class="context-menu" id="contextMenu">
-    <button data-action="edit">✏️ Edit HTML element</button>
-    <button data-action="url">🔗 View URL</button>
-    <button data-action="copy">📋 Copy URL</button>
-    <button data-action="text">📝 Edit text</button>
-    <button data-action="remove">🗑️ Remove element</button>
-</div>
 
 <footer>
     Made with ✦ by <strong>Handy Tools and Links</strong>
@@ -390,11 +354,12 @@ let activeFile = "index.html";
 let selectedElement = null;
 let longPressTimer = null;
 let previewDocument = null;
+let previewMenu = null;
+let previewListenersInstalled = false;
 
 const editor = document.getElementById("codeEditor");
 const fileList = document.getElementById("fileList");
 const iframe = document.getElementById("websitePreview");
-const contextMenu = document.getElementById("contextMenu");
 
 function saveCurrentFile() {
     if (activeFile && Object.hasOwn(files, activeFile)) {
@@ -415,7 +380,6 @@ function renderFiles() {
         select.textContent = "📄 " + name;
         select.title = name;
         select.onclick = () => selectFile(name);
-
         item.appendChild(select);
 
         if (Object.keys(files).length > 1 && name !== "index.html") {
@@ -425,7 +389,6 @@ function renderFiles() {
             remove.onclick = () => deleteFile(name);
             item.appendChild(remove);
         }
-
         fileList.appendChild(item);
     });
 }
@@ -444,7 +407,6 @@ function selectFile(name) {
 
 function addFile() {
     saveCurrentFile();
-
     const name = prompt("Enter filename (example: about.html):");
     if (!name) return;
 
@@ -510,8 +472,6 @@ editor.addEventListener("keydown", event => {
     }
 });
 
-// BUILD PREVIEW
-
 function buildWebsite() {
     saveCurrentFile();
 
@@ -544,7 +504,6 @@ function buildWebsite() {
 }
 
 function refreshPreview() {
-    hideContextMenu();
     iframe.srcdoc = buildWebsite();
     document.getElementById("editorStatus").textContent = "Preview updated";
 }
@@ -567,20 +526,38 @@ function openPreview() {
     setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-// PREVIEW CONTEXT MENU
+// PREVIEW MENU
 
 function enablePreviewContextMenu() {
     const doc = iframe.contentDocument;
     if (!doc || !doc.body) return;
 
     previewDocument = doc;
+    previewMenu = null;
+
+    // Disable native browser selection and long-press menus
+    // ONLY inside the iframe preview.
+    const disableNative = doc.createElement("style");
+    disableNative.textContent = `
+        html, body, body * {
+            -webkit-touch-callout: none !important;
+        }
+        body, body * {
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        a, img, button, input {
+            -webkit-touch-callout: none !important;
+        }
+    `;
+    doc.head.appendChild(disableNative);
 
     const menu = doc.createElement("div");
     menu.style.cssText = `
         position:fixed;
         display:none;
         z-index:2147483647;
-        min-width:190px;
+        min-width:195px;
         padding:6px;
         background:#ffffff;
         color:#182033;
@@ -594,6 +571,7 @@ function enablePreviewContextMenu() {
         <button data-action="edit">✏️ Edit HTML element</button>
         <button data-action="url">🔗 View URL</button>
         <button data-action="copy">📋 Copy URL</button>
+        <button data-action="changeurl">✏️ Change URL</button>
         <button data-action="text">📝 Edit text</button>
         <button data-action="remove">🗑️ Remove element</button>
     `;
@@ -609,55 +587,33 @@ function enablePreviewContextMenu() {
     });
 
     doc.body.appendChild(menu);
+    previewMenu = menu;
 
-    function hide() {
+    function hideMenu() {
         menu.style.display = "none";
         selectedElement = null;
     }
 
-    function show(element, x, y) {
-        if (element === menu || menu.contains(element)) return;
+    function showCustomMenu(element, x, y) {
+        if (!element || element === menu || menu.contains(element)) return;
 
         selectedElement = element;
         menu.style.display = "block";
 
         const link = element.closest("a");
-        menu.querySelector('[data-action="url"]').style.display =
-            link ? "block" : "none";
-        menu.querySelector('[data-action="copy"]').style.display =
-            link ? "block" : "none";
+        menu.querySelectorAll('[data-action="url"],[data-action="copy"],[data-action="changeurl"]')
+            .forEach(button => {
+                button.style.display = link ? "block" : "none";
+            });
 
-        const rect = iframe.getBoundingClientRect();
-        const maxX = iframe.clientWidth - menu.offsetWidth - 8;
-        const maxY = iframe.clientHeight - menu.offsetHeight - 8;
+        const maxX = doc.documentElement.clientWidth - menu.offsetWidth - 8;
+        const maxY = doc.documentElement.clientHeight - menu.offsetHeight - 8;
 
         menu.style.left = Math.max(5, Math.min(x, maxX)) + "px";
         menu.style.top = Math.max(5, Math.min(y, maxY)) + "px";
     }
 
-    doc.addEventListener("contextmenu", event => {
-        event.preventDefault();
-        show(event.target, event.clientX, event.clientY);
-    });
-
-    doc.addEventListener("touchstart", event => {
-        const element = event.target;
-        if (menu.contains(element)) return;
-
-        const touch = event.touches[0];
-
-        longPressTimer = setTimeout(() => {
-            show(element, touch.clientX, touch.clientY);
-        }, 600);
-    }, {passive:true});
-
-    doc.addEventListener("touchend", () => clearTimeout(longPressTimer));
-    doc.addEventListener("touchmove", () => clearTimeout(longPressTimer));
-
-    doc.addEventListener("click", event => {
-        if (!menu.contains(event.target)) hide();
-    });
-
+    // Make the function available to the menu handlers.
     menu.addEventListener("click", async event => {
         const button = event.target.closest("button");
         if (!button || !selectedElement) return;
@@ -666,8 +622,7 @@ function enablePreviewContextMenu() {
         const link = selectedElement.closest("a");
 
         if (action === "url" && link) {
-            const value = link.getAttribute("href") || "";
-            prompt("Link URL:", value);
+            prompt("Link URL:", link.getAttribute("href") || "");
         }
 
         if (action === "copy" && link) {
@@ -680,12 +635,16 @@ function enablePreviewContextMenu() {
             }
         }
 
-        if (action === "text") {
-            const value = prompt(
-                "Edit element text:",
-                selectedElement.textContent
-            );
+        if (action === "changeurl" && link) {
+            const value = prompt("Enter new URL:", link.getAttribute("href") || "");
+            if (value !== null) {
+                link.setAttribute("href", value);
+                syncPreviewChanges();
+            }
+        }
 
+        if (action === "text") {
+            const value = prompt("Edit element text:", selectedElement.textContent);
             if (value !== null) {
                 selectedElement.textContent = value;
                 syncPreviewChanges();
@@ -693,19 +652,13 @@ function enablePreviewContextMenu() {
         }
 
         if (action === "edit") {
-            const value = prompt(
-                "Edit HTML:",
-                selectedElement.outerHTML
-            );
-
+            const value = prompt("Edit HTML:", selectedElement.outerHTML);
             if (value !== null) {
                 const template = doc.createElement("template");
                 template.innerHTML = value;
 
                 if (template.content.childElementCount === 1) {
-                    selectedElement.replaceWith(
-                        template.content.firstElementChild
-                    );
+                    selectedElement.replaceWith(template.content.firstElementChild);
                     syncPreviewChanges();
                 } else {
                     alert("Enter exactly one HTML element.");
@@ -720,15 +673,69 @@ function enablePreviewContextMenu() {
             }
         }
 
-        hide();
+        hideMenu();
+    });
+
+    // Right-click on desktop.
+    doc.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        showCustomMenu(event.target, event.clientX, event.clientY);
+    }, true);
+
+    // Long press on mobile.
+    let timer = null;
+    let startX = 0;
+    let startY = 0;
+    let touchTarget = null;
+
+    doc.addEventListener("touchstart", event => {
+        if (event.touches.length !== 1) return;
+
+        const touch = event.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        touchTarget = event.target;
+
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+            showCustomMenu(touchTarget, startX, startY);
+        }, 600);
+    }, {passive:true, capture:true});
+
+    doc.addEventListener("touchmove", event => {
+        if (!timer) return;
+
+        const touch = event.touches[0];
+
+        if (
+            Math.abs(touch.clientX - startX) > 12 ||
+            Math.abs(touch.clientY - startY) > 12
+        ) {
+            clearTimeout(timer);
+            timer = null;
+        }
+    }, {passive:true, capture:true});
+
+    function cancelLongPress() {
+        clearTimeout(timer);
+        timer = null;
+    }
+
+    doc.addEventListener("touchend", cancelLongPress, true);
+    doc.addEventListener("touchcancel", cancelLongPress, true);
+
+    doc.addEventListener("click", event => {
+        if (!menu.contains(event.target)) hideMenu();
     });
 
     doc.addEventListener("keydown", event => {
-        if (event.key === "Escape") hide();
+        if (event.key === "Escape") hideMenu();
     });
 }
 
-// SYNC PREVIEW HTML BACK INTO PROJECT
+// SAVE PREVIEW CHANGES
 
 function syncPreviewChanges() {
     if (!previewDocument) return;
@@ -842,7 +849,6 @@ try {
 editor.value = files[activeFile];
 renderFiles();
 refreshPreview();
-
 </script>
 </body>
 </html>
