@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Viewer</title>
+
+<style>
+:root {
+    --bg:#f5f7fc;
+    --card:#fff;
+    --text:#182033;
+    --muted:#788398;
+    --border:#e6eaf1;
+    --accent:#635bff;
+    --accent-light:#eeedff;
+}
+.dark {
+    --bg:#101522;
+    --card:#1a2232;
+    --text:#f1f4fa;
+    --muted:#9ba7ba;
+    --border:#30394b;
+    --accent:#a29bff;
+    --accent-light:#29274c;
+}
+* {margin:0;padding:0;box-sizing:border-box}
+body {
+    font-family:Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    transition:.25s;
+}
+header {
+    min-height:75px;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 7%;
+}
+.logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:bold;
+    color:var(--text);
+    text-decoration:none;
+}
+.logo-icon {
+    background:var(--accent);
+    color:white;
+    width:39px;
+    height:39px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+}
+nav {display:flex;align-items:center;gap:15px}
+nav a {
+    color:var(--muted);
+    text-decoration:none;
+    font-size:14px;
+}
+button,input {font:inherit}
+button {cursor:pointer}
+.theme-btn,.btn {
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:10px 14px;
+    border-radius:9px;
+}
+.primary {
+    background:var(--accent);
+    color:white;
+    border-color:var(--accent);
+}
+main {
+    flex:1;
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+    padding:40px 24px;
+}
+.hero {
+    text-align:center;
+    margin-bottom:30px;
+}
+.tag {
+    display:inline-block;
+    background:var(--accent-light);
+    color:var(--accent);
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:18px;
+}
+.hero h1 {
+    font-size:clamp(32px,5vw,48px);
+    letter-spacing:-1.5px;
+    margin-bottom:12px;
+}
+.hero h1 span {color:var(--accent)}
+.hero p {
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+.viewer {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+}
+.toolbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:15px;
+    border-bottom:1px solid var(--border);
+}
+.toolbar strong {font-size:14px}
+.actions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+}
+.actions button,.actions input {font-size:12px}
+.filename {
+    width:155px;
+    min-width:0;
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:10px;
+    outline:none;
+}
+.filename:focus {border-color:var(--accent)}
+.workspace {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:500px;
+}
+.panel {min-width:0}
+.panel+.panel {border-left:1px solid var(--border)}
+.panel-title {
+    padding:13px 16px;
+    font-size:12px;
+    font-weight:bold;
+    color:var(--muted);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+}
+textarea {
+    display:block;
+    width:100%;
+    height:500px;
+    resize:vertical;
+    border:0;
+    outline:none;
+    padding:18px;
+    background:var(--card);
+    color:var(--text);
+    font:13px/1.7 monospace;
+}
+.preview-frame {
+    width:100%;
+    height:500px;
+    border:0;
+    display:block;
+    background:white;
+}
+.file-label {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 14px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    cursor:pointer;
+    font-size:12px;
+}
+.file-label:hover,.btn:hover {border-color:var(--accent)}
+#fileInput {display:none}
+footer {
+    border-top:1px solid var(--border);
+    padding:28px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+}
+footer strong {color:var(--accent)}
+@media(max-width:750px) {
+    header {padding:12px 5%}
+    .logo {font-size:15px}
+    nav a {display:none}
+    main {padding:30px 12px}
+    .workspace {grid-template-columns:1fr}
+    .panel+.panel {
+        border-left:0;
+        border-top:1px solid var(--border);
+    }
+    textarea,.preview-frame {height:400px}
+    .toolbar {align-items:flex-start}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a href="../" class="logo">
+        <div class="logo-icon">✦</div>
+        Handy Tools and Links
+    </a>
+    <nav>
+        <a href="../">Home</a>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeButton">
+            🌙
+        </button>
+    </nav>
+</header>
+
+<main>
+
+<section class="hero">
+    <div class="tag">🌐 HTML TOOL</div>
+    <h1>HTML <span>Viewer</span></h1>
+    <p>
+        Write HTML, load an existing file and see
+        your webpage preview instantly.
+    </p>
+</section>
+
+<section class="viewer">
+
+    <div class="toolbar">
+        <strong>✎ HTML Editor</strong>
+
+        <div class="actions">
+
+            <label class="file-label" for="fileInput">
+                📂 Open HTML
+            </label>
+
+            <input
+                type="file"
+                id="fileInput"
+                accept=".html,.htm,text/html">
+
+            <input
+                type="text"
+                id="downloadName"
+                class="filename"
+                value="my-website"
+                placeholder="File name"
+                aria-label="Download filename">
+
+            <button class="btn" onclick="resetEditor()">
+                Reset
+            </button>
+
+            <button class="btn" onclick="copyHTML()">
+                Copy
+            </button>
+
+            <button class="btn primary" onclick="downloadHTML()">
+                ↓ Download
+            </button>
+
+            <button class="btn primary" onclick="openPreview()">
+                ↗ Open preview
+            </button>
+
+        </div>
+    </div>
+
+    <div class="workspace">
+
+        <div class="panel">
+            <div class="panel-title">
+                HTML SOURCE
+                <span>EDIT</span>
+            </div>
+
+            <textarea id="htmlSource" spellcheck="false"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f7fc;
+        }
+
+        h1 {
+            color: #635bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>Welcome to my first HTML page.</p>
+</body>
+</html></textarea>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">
+                LIVE PREVIEW
+                <span>OUTPUT</span>
+            </div>
+
+            <iframe
+                id="previewFrame"
+                class="preview-frame"
+                title="HTML preview"
+                sandbox="allow-scripts allow-forms allow-modals allow-popups">
+            </iframe>
+        </div>
+
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <p>
+        Made with ✦ by
+        <strong>Handy Tools and Links</strong>
+    </p>
+    <p style="margin-top:8px">
+        Your HTML playground.
+    </p>
+</footer>
+
+<script>
+
+const source = document.getElementById("htmlSource");
+const preview = document.getElementById("previewFrame");
+
+// LIVE PREVIEW
+
+function updatePreview() {
+    preview.srcdoc = source.value;
+}
+
+source.addEventListener("input", updatePreview);
+
+// OPEN LOCAL HTML FILE
+
+document.getElementById("fileInput")
+.addEventListener("change", function(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        source.value = e.target.result;
+
+        document.getElementById("downloadName").value =
+            file.name.replace(/\.html?$/i, "");
+
+        updatePreview();
+    };
+
+    reader.readAsText(file);
+
+});
+
+// RESET
+
+function resetEditor() {
+    source.value = `<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>Start writing HTML here.</p>
+</body>
+</html>`;
+
+    document.getElementById("downloadName").value = "my-website";
+    updatePreview();
+}
+
+// COPY
+
+async function copyHTML() {
+    try {
+        await navigator.clipboard.writeText(source.value);
+        alert("HTML copied!");
+    } catch(error) {
+        alert("Clipboard unavailable. Please copy manually.");
+    }
+}
+
+// DOWNLOAD WITH CUSTOM NAME
+
+function downloadHTML() {
+
+    let filename = document
+        .getElementById("downloadName")
+        .value.trim();
+
+    if (!filename) {
+        filename = "my-website";
+    }
+
+    filename = filename.replace(/\.html?$/i, "");
+    filename = filename.replace(/[\\/:*?"<>|]/g, "_");
+
+    if (!filename || filename === "." || filename === "..") {
+        filename = "my-website";
+    }
+
+    const blob = new Blob(
+        [source.value],
+        {type:"text/html"}
+    );
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename + ".html";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// OPEN PREVIEW IN NEW TAB
+
+function openPreview() {
+    const blob = new Blob(
+        [source.value],
+        {type:"text/html"}
+    );
+
+    const url = URL.createObjectURL(blob);
+    const newWindow = window.open(url, "_blank");
+
+    if (!newWindow) {
+        URL.revokeObjectURL(url);
+        alert("Please allow popups to open the preview.");
+    }
+}
+
+// DARK MODE
+
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+
+    document.getElementById("themeButton").textContent =
+        isDark ? "☀️" : "🌙";
+
+    localStorage.setItem(
+        "handy-tools-theme",
+        isDark ? "dark" : "light"
+    );
+}
+
+// LOAD SAVED THEME
+
+try {
+    if (localStorage.getItem("handy-tools-theme") === "dark") {
+        document.body.classList.add("dark");
+        document.getElementById("themeButton").textContent = "☀️";
+    }
+} catch(error) {
+    // Theme storage may be unavailable.
+}
+
+// INITIAL PREVIEW
+
+updatePreview();
+
+</script>
+
+</body>
+</html>
