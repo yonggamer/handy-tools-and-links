@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Workbench</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+:root {
+    --bg:#f5f7fc;
+    --card:#fff;
+    --text:#182033;
+    --muted:#788398;
+    --border:#e6eaf1;
+    --accent:#635bff;
+    --soft:#eeedff;
+}
+.dark {
+    --bg:#101522;
+    --card:#1a2232;
+    --text:#f1f4fa;
+    --muted:#9ba7ba;
+    --border:#30394b;
+    --accent:#a29bff;
+    --soft:#29274c;
+}
+* {box-sizing:border-box;margin:0;padding:0}
+body {
+    font-family:Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+button,input,textarea {font:inherit}
+button {cursor:pointer}
+
+header {
+    min-height:70px;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    padding:12px 5%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+.logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text);
+    text-decoration:none;
+    font-weight:bold;
+    font-size:19px;
+}
+.logo-icon {
+    width:38px;height:38px;
+    display:grid;place-items:center;
+    background:var(--accent);
+    color:white;border-radius:11px;
+}
+.header-actions {display:flex;gap:9px}
+.btn {
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:8px;
+    padding:9px 13px;
+    font-size:13px;
+}
+.btn:hover {border-color:var(--accent)}
+.primary {
+    background:var(--accent);
+    color:white;
+    border-color:var(--accent);
+}
+main {
+    flex:1;
+    max-width:1550px;
+    width:100%;
+    margin:auto;
+    padding:30px 20px;
+}
+.hero {text-align:center;margin-bottom:25px}
+.tag {
+    display:inline-block;
+    background:var(--soft);
+    color:var(--accent);
+    padding:7px 13px;
+    border-radius:30px;
+    font-size:11px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+h1 {
+    font-size:clamp(30px,5vw,43px);
+    letter-spacing:-1.5px;
+    margin-bottom:9px;
+}
+.hero p {color:var(--muted);font-size:14px;line-height:1.6}
+
+.project-bar {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:13px;
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:15px;
+}
+.project-bar label {font-size:12px;font-weight:bold}
+.project-bar input {
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:10px;
+    border-radius:8px;
+    outline:none;
+    min-width:0;
+    flex:1;
+}
+.workspace {
+    display:grid;
+    grid-template-columns:190px minmax(0,1fr);
+    gap:14px;
+}
+.sidebar {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+}
+.sidebar-heading {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:13px;
+}
+.sidebar-heading strong {font-size:13px}
+.file-list {display:flex;flex-direction:column;gap:6px}
+.file-item {display:flex;align-items:center;gap:5px}
+.file-select {
+    flex:1;min-width:0;
+    text-align:left;
+    padding:10px 7px;
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--muted);
+    border-radius:7px;
+    font-size:12px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.file-select.active {
+    background:var(--soft);
+    color:var(--accent);
+    border-color:var(--accent);
+}
+.editor-area {min-width:0;display:flex;flex-direction:column;gap:12px}
+.editor-card,.preview-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+}
+.editor-heading,.preview-heading {
+    padding:12px 15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px solid var(--border);
+}
+.editor-heading strong,.preview-heading strong {font-size:13px}
+.editor-heading span {color:var(--muted);font-size:11px}
+.code-editor {
+    display:block;
+    width:100%;
+    height:390px;
+    resize:vertical;
+    padding:18px;
+    background:var(--card);
+    color:var(--text);
+    border:0;
+    outline:none;
+    font:13px/1.8 monospace;
+    tab-size:4;
+    white-space:pre;
+}
+.preview-card iframe {
+    display:block;
+    width:100%;
+    height:420px;
+    border:0;
+    background:white;
+}
+.preview-actions {display:flex;gap:7px}
+.preview-actions button {font-size:11px}
+.status {
+    color:var(--muted);
+    font-size:11px;
+    padding:9px 15px;
+    border-top:1px solid var(--border);
+}
+.context-menu {
+    display:none;
+    position:fixed;
+    z-index:99999;
+    min-width:190px;
+    padding:6px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:0 8px 30px rgba(0,0,0,.2);
+}
+.context-menu button {
+    display:block;
+    width:100%;
+    padding:11px;
+    border:0;
+    background:transparent;
+    color:var(--text);
+    text-align:left;
+    border-radius:6px;
+    font-size:13px;
+}
+.context-menu button:hover {
+    background:var(--soft);
+    color:var(--accent);
+}
+footer {
+    text-align:center;
+    padding:25px;
+    color:var(--muted);
+    border-top:1px solid var(--border);
+    font-size:12px;
+}
+footer strong {color:var(--accent)}
+
+@media(max-width:750px) {
+    header {padding:12px 4%}
+    .logo {font-size:15px}
+    .workspace {grid-template-columns:1fr}
+    .sidebar {padding:12px}
+    .file-list {flex-direction:row;flex-wrap:wrap}
+    .file-item {max-width:100%}
+    .file-select {max-width:150px}
+    main {padding:22px 12px}
+    .code-editor {height:350px}
+    .header-actions .btn {padding:8px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a href="../" class="logo">
+        <div class="logo-icon">✦</div>
+        Handy Tools and Links
+    </a>
+    <div class="header-actions">
+        <button class="btn" onclick="toggleTheme()" id="themeButton">🌙</button>
+        <a href="../" class="btn" style="text-decoration:none">Home</a>
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+    <div class="tag">🛠️ WEBSITE DEVELOPMENT TOOL</div>
+    <h1>Website Workbench</h1>
+    <p>Create, edit, preview and download your own websites.</p>
+</section>
+
+<div class="project-bar">
+    <label for="projectName">PROJECT NAME</label>
+    <input id="projectName" value="My Website" placeholder="Enter project name">
+    <button class="btn" onclick="resetProject()">New project</button>
+    <button class="btn" onclick="downloadCurrentFile()">↓ Download file</button>
+    <button class="btn primary" onclick="exportProject()">📦 Export ZIP</button>
+</div>
+
+<section class="workspace">
+
+    <aside class="sidebar">
+        <div class="sidebar-heading">
+            <strong>📁 Project files</strong>
+            <button class="btn" onclick="addFile()">+</button>
+        </div>
+        <div class="file-list" id="fileList"></div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;margin-top:15px">
+            Select a file to edit it.
+        </p>
+    </aside>
+
+    <div class="editor-area">
+
+        <section class="editor-card">
+            <div class="editor-heading">
+                <strong id="editorTitle">index.html</strong>
+                <span id="fileType">HTML</span>
+            </div>
+            <textarea id="codeEditor" class="code-editor"
+                spellcheck="false" autocapitalize="off"
+                autocomplete="off"></textarea>
+            <div class="status" id="editorStatus">Ready</div>
+        </section>
+
+        <section class="preview-card">
+            <div class="preview-heading">
+                <strong>🌐 Live website preview</strong>
+                <div class="preview-actions">
+                    <button class="btn" onclick="refreshPreview()">↻ Refresh</button>
+                    <button class="btn" onclick="openPreview()">↗ New tab</button>
+                </div>
+            </div>
+
+            <iframe id="websitePreview"
+                title="Website preview"
+                sandbox="allow-scripts allow-forms allow-modals allow-popups">
+            </iframe>
+        </section>
+
+    </div>
+</section>
+</main>
+
+<div class="context-menu" id="contextMenu">
+    <button data-action="edit">✏️ Edit HTML element</button>
+    <button data-action="url">🔗 View URL</button>
+    <button data-action="copy">📋 Copy URL</button>
+    <button data-action="text">📝 Edit text</button>
+    <button data-action="remove">🗑️ Remove element</button>
+</div>
+
+<footer>
+    Made with ✦ by <strong>Handy Tools and Links</strong>
+    <p style="margin-top:7px">Your website development workspace.</p>
+</footer>
+
+<script>
+const defaultFiles = {
+"index.html": `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Website</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Hello, World!</h1>
+<p>Welcome to my website.</p>
+<a href="https://example.com">Example link</a>
+<button onclick="sayHello()">Click me!</button>
+<script src="script.js"><\/script>
+</body>
+</html>`,
+
+"style.css": `body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fc;
+    color: #182033;
+    padding: 40px;
+}
+h1 { color: #635bff; }
+button {
+    padding: 10px 18px;
+    background: #635bff;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}`,
+
+"script.js": `function sayHello() {
+    alert("Hello from Website Workbench!");
+}`
+};
+
+let files = {...defaultFiles};
+let activeFile = "index.html";
+let selectedElement = null;
+let longPressTimer = null;
+let previewDocument = null;
+
+const editor = document.getElementById("codeEditor");
+const fileList = document.getElementById("fileList");
+const iframe = document.getElementById("websitePreview");
+const contextMenu = document.getElementById("contextMenu");
+
+function saveCurrentFile() {
+    if (activeFile && Object.hasOwn(files, activeFile)) {
+        files[activeFile] = editor.value;
+    }
+}
+
+function renderFiles() {
+    fileList.innerHTML = "";
+
+    Object.keys(files).forEach(name => {
+        const item = document.createElement("div");
+        item.className = "file-item";
+
+        const select = document.createElement("button");
+        select.className = "file-select" +
+            (name === activeFile ? " active" : "");
+        select.textContent = "📄 " + name;
+        select.title = name;
+        select.onclick = () => selectFile(name);
+
+        item.appendChild(select);
+
+        if (Object.keys(files).length > 1 && name !== "index.html") {
+            const remove = document.createElement("button");
+            remove.className = "btn";
+            remove.textContent = "×";
+            remove.onclick = () => deleteFile(name);
+            item.appendChild(remove);
+        }
+
+        fileList.appendChild(item);
+    });
+}
+
+function selectFile(name) {
+    saveCurrentFile();
+    activeFile = name;
+    editor.value = files[name];
+
+    document.getElementById("editorTitle").textContent = name;
+    document.getElementById("fileType").textContent =
+        name.split(".").pop().toUpperCase();
+
+    renderFiles();
+}
+
+function addFile() {
+    saveCurrentFile();
+
+    const name = prompt("Enter filename (example: about.html):");
+    if (!name) return;
+
+    const clean = name.trim();
+
+    if (!/^[a-zA-Z0-9_. -]+$/.test(clean) ||
+        clean.includes("..") || Object.hasOwn(files, clean)) {
+        alert("Invalid or existing filename.");
+        return;
+    }
+
+    const ext = clean.split(".").pop().toLowerCase();
+    let content = "";
+
+    if (ext === "html") {
+        content = `<!DOCTYPE html>
+<html>
+<head><title>New page</title></head>
+<body><h1>New page</h1></body>
+</html>`;
+    }
+
+    files[clean] = content;
+    selectFile(clean);
+    refreshPreview();
+}
+
+function deleteFile(name) {
+    if (name === "index.html") {
+        alert("You cannot delete index.html.");
+        return;
+    }
+
+    if (!confirm("Delete " + name + "?")) return;
+
+    delete files[name];
+
+    if (activeFile === name) {
+        activeFile = "index.html";
+        editor.value = files[activeFile];
+        document.getElementById("editorTitle").textContent = activeFile;
+        document.getElementById("fileType").textContent = "HTML";
+    }
+
+    renderFiles();
+    refreshPreview();
+}
+
+editor.addEventListener("input", () => {
+    saveCurrentFile();
+    document.getElementById("editorStatus").textContent =
+        "Changes saved in project";
+    refreshPreview();
+});
+
+editor.addEventListener("keydown", event => {
+    if (event.key === "Tab") {
+        event.preventDefault();
+        editor.setRangeText("    ", editor.selectionStart,
+            editor.selectionEnd, "end");
+        saveCurrentFile();
+        refreshPreview();
+    }
+});
+
+// BUILD PREVIEW
+
+function buildWebsite() {
+    saveCurrentFile();
+
+    let html = files["index.html"] || "<h1>No index.html found</h1>";
+
+    const css = Object.entries(files)
+        .filter(([name]) => name.toLowerCase().endsWith(".css"))
+        .map(([, content]) => content).join("\n");
+
+    const js = Object.entries(files)
+        .filter(([name]) => name.toLowerCase().endsWith(".js"))
+        .map(([, content]) => content).join("\n");
+
+    const style = "<style>\n" + css + "\n</style>";
+    const script = "<script>\n" + js + "\n<\/script>";
+
+    if (/<\/head>/i.test(html)) {
+        html = html.replace(/<\/head>/i, style + "\n</head>");
+    } else {
+        html = style + html;
+    }
+
+    if (/<\/body>/i.test(html)) {
+        html = html.replace(/<\/body>/i, script + "\n</body>");
+    } else {
+        html += script;
+    }
+
+    return html;
+}
+
+function refreshPreview() {
+    hideContextMenu();
+    iframe.srcdoc = buildWebsite();
+    document.getElementById("editorStatus").textContent = "Preview updated";
+}
+
+iframe.addEventListener("load", () => {
+    enablePreviewContextMenu();
+});
+
+function openPreview() {
+    const blob = new Blob([buildWebsite()], {type:"text/html"});
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, "_blank");
+
+    if (!win) {
+        URL.revokeObjectURL(url);
+        alert("Please allow popups.");
+        return;
+    }
+
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+// PREVIEW CONTEXT MENU
+
+function enablePreviewContextMenu() {
+    const doc = iframe.contentDocument;
+    if (!doc || !doc.body) return;
+
+    previewDocument = doc;
+
+    const menu = doc.createElement("div");
+    menu.style.cssText = `
+        position:fixed;
+        display:none;
+        z-index:2147483647;
+        min-width:190px;
+        padding:6px;
+        background:#ffffff;
+        color:#182033;
+        border:1px solid #dce0ea;
+        border-radius:10px;
+        box-shadow:0 8px 30px rgba(0,0,0,.25);
+        font:13px Arial,sans-serif;
+    `;
+
+    menu.innerHTML = `
+        <button data-action="edit">✏️ Edit HTML element</button>
+        <button data-action="url">🔗 View URL</button>
+        <button data-action="copy">📋 Copy URL</button>
+        <button data-action="text">📝 Edit text</button>
+        <button data-action="remove">🗑️ Remove element</button>
+    `;
+
+    menu.querySelectorAll("button").forEach(button => {
+        button.style.cssText = `
+            display:block;width:100%;padding:11px;
+            border:0;background:transparent;color:#182033;
+            text-align:left;border-radius:6px;cursor:pointer;
+        `;
+        button.onmouseenter = () => button.style.background = "#eeedff";
+        button.onmouseleave = () => button.style.background = "transparent";
+    });
+
+    doc.body.appendChild(menu);
+
+    function hide() {
+        menu.style.display = "none";
+        selectedElement = null;
+    }
+
+    function show(element, x, y) {
+        if (element === menu || menu.contains(element)) return;
+
+        selectedElement = element;
+        menu.style.display = "block";
+
+        const link = element.closest("a");
+        menu.querySelector('[data-action="url"]').style.display =
+            link ? "block" : "none";
+        menu.querySelector('[data-action="copy"]').style.display =
+            link ? "block" : "none";
+
+        const rect = iframe.getBoundingClientRect();
+        const maxX = iframe.clientWidth - menu.offsetWidth - 8;
+        const maxY = iframe.clientHeight - menu.offsetHeight - 8;
+
+        menu.style.left = Math.max(5, Math.min(x, maxX)) + "px";
+        menu.style.top = Math.max(5, Math.min(y, maxY)) + "px";
+    }
+
+    doc.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        show(event.target, event.clientX, event.clientY);
+    });
+
+    doc.addEventListener("touchstart", event => {
+        const element = event.target;
+        if (menu.contains(element)) return;
+
+        const touch = event.touches[0];
+
+        longPressTimer = setTimeout(() => {
+            show(element, touch.clientX, touch.clientY);
+        }, 600);
+    }, {passive:true});
+
+    doc.addEventListener("touchend", () => clearTimeout(longPressTimer));
+    doc.addEventListener("touchmove", () => clearTimeout(longPressTimer));
+
+    doc.addEventListener("click", event => {
+        if (!menu.contains(event.target)) hide();
+    });
+
+    menu.addEventListener("click", async event => {
+        const button = event.target.closest("button");
+        if (!button || !selectedElement) return;
+
+        const action = button.dataset.action;
+        const link = selectedElement.closest("a");
+
+        if (action === "url" && link) {
+            const value = link.getAttribute("href") || "";
+            prompt("Link URL:", value);
+        }
+
+        if (action === "copy" && link) {
+            const value = link.getAttribute("href") || "";
+            try {
+                await navigator.clipboard.writeText(value);
+                alert("URL copied: " + value);
+            } catch {
+                prompt("Copy this URL:", value);
+            }
+        }
+
+        if (action === "text") {
+            const value = prompt(
+                "Edit element text:",
+                selectedElement.textContent
+            );
+
+            if (value !== null) {
+                selectedElement.textContent = value;
+                syncPreviewChanges();
+            }
+        }
+
+        if (action === "edit") {
+            const value = prompt(
+                "Edit HTML:",
+                selectedElement.outerHTML
+            );
+
+            if (value !== null) {
+                const template = doc.createElement("template");
+                template.innerHTML = value;
+
+                if (template.content.childElementCount === 1) {
+                    selectedElement.replaceWith(
+                        template.content.firstElementChild
+                    );
+                    syncPreviewChanges();
+                } else {
+                    alert("Enter exactly one HTML element.");
+                }
+            }
+        }
+
+        if (action === "remove") {
+            if (confirm("Remove this element?")) {
+                selectedElement.remove();
+                syncPreviewChanges();
+            }
+        }
+
+        hide();
+    });
+
+    doc.addEventListener("keydown", event => {
+        if (event.key === "Escape") hide();
+    });
+}
+
+// SYNC PREVIEW HTML BACK INTO PROJECT
+
+function syncPreviewChanges() {
+    if (!previewDocument) return;
+
+    const html = "<!DOCTYPE html>\n" +
+        previewDocument.documentElement.outerHTML;
+
+    files["index.html"] = html;
+
+    if (activeFile === "index.html") {
+        editor.value = html;
+    }
+
+    document.getElementById("editorStatus").textContent =
+        "Preview changes saved to index.html";
+}
+
+// DOWNLOAD
+
+function downloadCurrentFile() {
+    saveCurrentFile();
+
+    const blob = new Blob(
+        [files[activeFile]],
+        {type:"text/plain;charset=utf-8"}
+    );
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = activeFile;
+    a.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ZIP EXPORT
+
+async function exportProject() {
+    saveCurrentFile();
+
+    if (typeof JSZip === "undefined") {
+        alert("ZIP library unavailable. Check your internet connection.");
+        return;
+    }
+
+    const zip = new JSZip();
+
+    Object.entries(files).forEach(([name, content]) => {
+        zip.file(name, content);
+    });
+
+    try {
+        const blob = await zip.generateAsync({type:"blob"});
+
+        let name = document.getElementById("projectName").value.trim();
+        name = name.replace(/[\\/:*?"<>|]/g, "_") || "my-website";
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name + ".zip";
+        a.click();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch(error) {
+        alert("Could not export project.");
+    }
+}
+
+// NEW PROJECT
+
+function resetProject() {
+    if (!confirm("Start a new project? Current files will be removed.")) return;
+
+    files = {...defaultFiles};
+    activeFile = "index.html";
+    document.getElementById("projectName").value = "My Website";
+
+    editor.value = files[activeFile];
+    document.getElementById("editorTitle").textContent = activeFile;
+    document.getElementById("fileType").textContent = "HTML";
+
+    renderFiles();
+    refreshPreview();
+}
+
+// DARK MODE
+
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+
+    const dark = document.body.classList.contains("dark");
+    document.getElementById("themeButton").textContent =
+        dark ? "☀️" : "🌙";
+
+    try {
+        localStorage.setItem("handy-tools-theme", dark ? "dark" : "light");
+    } catch(e) {}
+}
+
+try {
+    if (localStorage.getItem("handy-tools-theme") === "dark") {
+        document.body.classList.add("dark");
+        document.getElementById("themeButton").textContent = "☀️";
+    }
+} catch(e) {}
+
+// INITIALIZE
+
+editor.value = files[activeFile];
+renderFiles();
+refreshPreview();
+
+</script>
+</body>
+</html>
