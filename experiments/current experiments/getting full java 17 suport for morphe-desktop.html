@@ -313,6 +313,65 @@ td {
 .source-link .arrow {
     color: var(--accent);
     font-size: 18px;
+    flex-shrink: 0;
+}
+
+/* DISCOVERY */
+
+.discovery-callout {
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 19px;
+    margin: 20px 0;
+}
+
+.discovery-callout strong {
+    display: block;
+    color: var(--accent);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.discovery-callout p {
+    color: var(--text);
+}
+
+.discovery-step {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 17px;
+    margin-top: 12px;
+}
+
+.discovery-step strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.discovery-step p {
+    font-size: 13px;
+}
+
+code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+}
+
+.inline-link {
+    color: var(--accent);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.inline-link:hover {
+    text-decoration: underline;
 }
 
 /* BACK BUTTON */
@@ -443,10 +502,18 @@ footer strong {
 
         <p style="margin-top:12px">
             At the moment, Java 17 support is only partial
-            overall. The 64-bit JRE already works with both
-            the graphical user interface (GUI) and the
+            overall. The 64-bit JRE works with both the
+            graphical user interface (GUI) and the
             command-line interface (CLI), while the 32-bit
             JRE currently only works with the CLI.
+        </p>
+
+        <p style="margin-top:12px">
+            During the investigation, a major limitation was
+            identified in the native graphics dependency:
+            the Windows x86 Skiko runtime needed by the GUI
+            was not available in the runtime configuration
+            examined.
         </p>
 
     </section>
@@ -530,17 +597,9 @@ footer strong {
         <h3>What this means</h3>
 
         <ul>
-            <li>
-                64-bit Java 17: Both GUI and CLI work.
-            </li>
-
-            <li>
-                32-bit Java 17: Only CLI works.
-            </li>
-
-            <li>
-                Full 32-bit GUI compatibility remains a goal.
-            </li>
+            <li>64-bit Java 17: Both GUI and CLI work.</li>
+            <li>32-bit Java 17: Only CLI works.</li>
+            <li>The missing x86 native graphics runtime is the key limitation identified in this investigation.</li>
         </ul>
 
     </section>
@@ -552,31 +611,12 @@ footer strong {
         <h2>🎯 Goals</h2>
 
         <ul>
-            <li>
-                Achieve full Java 17 compatibility.
-            </li>
-
-            <li>
-                Get the graphical interface working with
-                32-bit Java 17.
-            </li>
-
-            <li>
-                Maintain 64-bit Java 17 GUI and CLI support.
-            </li>
-
-            <li>
-                Investigate architecture detection and
-                dependency compatibility.
-            </li>
-
-            <li>
-                Verify native libraries and bootstrap downloads.
-            </li>
-
-            <li>
-                Test the application on different Java runtimes.
-            </li>
+            <li>Achieve full Java 17 compatibility where the required dependencies are available.</li>
+            <li>Investigate whether the graphical interface can be supported with 32-bit Java 17.</li>
+            <li>Maintain 64-bit Java 17 GUI and CLI support.</li>
+            <li>Investigate architecture detection and dependency compatibility.</li>
+            <li>Verify native libraries and bootstrap downloads.</li>
+            <li>Test the application on different Java runtimes.</li>
         </ul>
 
     </section>
@@ -588,9 +628,15 @@ footer strong {
         <h2>🔍 Technical investigation</h2>
 
         <p>
-            These four files in the Morphe Desktop repository
-            are the main files to investigate for changes
-            related to Java 17 and architecture compatibility.
+            Four important files in the Morphe Desktop
+            repository helped investigate how architecture
+            compatibility is implemented.
+        </p>
+
+        <p style="margin-top:12px">
+            The investigation was guided by the changes in
+            Morphe Desktop pull request #399, which adds
+            Windows ARM64 support.
         </p>
 
         <div class="source-list" style="margin-top:20px">
@@ -599,59 +645,423 @@ footer strong {
                href="https://github.com/MorpheApp/morphe-desktop/blob/dev/buildSrc/src/main/java/app/morphe/tasks/GenerateBootstrapConstantsTask.java"
                target="_blank"
                rel="noopener noreferrer">
-
                 <span>
                     <strong>GenerateBootstrapConstantsTask.java</strong>
                     <small>Bootstrap constants and native library hashes</small>
                 </span>
-
                 <span class="arrow">↗</span>
-
             </a>
 
             <a class="source-link"
                href="https://github.com/MorpheApp/morphe-desktop/blob/dev/gradle/libs.versions.toml"
                target="_blank"
                rel="noopener noreferrer">
-
                 <span>
                     <strong>libs.versions.toml</strong>
                     <small>Dependency versions and Compose Desktop libraries</small>
                 </span>
-
                 <span class="arrow">↗</span>
-
             </a>
 
             <a class="source-link"
                href="https://github.com/MorpheApp/morphe-desktop/blob/dev/src/main/kotlin/app/morphe/engine/PlatformDetector.kt"
                target="_blank"
                rel="noopener noreferrer">
-
                 <span>
                     <strong>PlatformDetector.kt</strong>
                     <small>Operating system and architecture detection</small>
                 </span>
-
                 <span class="arrow">↗</span>
-
             </a>
 
             <a class="source-link"
                href="https://github.com/MorpheApp/morphe-desktop/blob/dev/src/test/kotlin/app/morphe/engine/BootstrapDownloaderVerificationTest.kt"
                target="_blank"
                rel="noopener noreferrer">
-
                 <span>
                     <strong>BootstrapDownloaderVerificationTest.kt</strong>
                     <small>Bootstrap verification and native library tests</small>
                 </span>
-
                 <span class="arrow">↗</span>
-
             </a>
 
         </div>
+
+        <h3>Original discovery reference</h3>
+
+        <a class="source-link"
+           href="https://github.com/MorpheApp/morphe-desktop/pull/399/files"
+           target="_blank"
+           rel="noopener noreferrer">
+            <span>
+                <strong>Morphe Desktop – Pull Request #399</strong>
+                <small>Windows ARM64 support: the four changed files that helped reveal the architecture requirements.</small>
+            </span>
+            <span class="arrow">↗</span>
+        </a>
+
+    </section>
+
+    <!-- DISCOVERY -->
+
+    <section class="content-card">
+
+        <h2>💡 How the discovery was made</h2>
+
+        <p>
+            The reason why the 32-bit graphical interface
+            did not work was not immediately obvious.
+            Simply looking at the Java version or the
+            platform detector did not explain the problem.
+        </p>
+
+        <p style="margin-top:12px">
+            The breakthrough came from investigating how
+            Morphe Desktop handles architecture compatibility
+            in its native dependencies.
+        </p>
+
+        <div class="discovery-step">
+            <strong>1. The original attempt</strong>
+            <p>
+                The initial objective was to add x86
+                (32-bit) support to Morphe Desktop so that
+                the GUI could also run with a 32-bit
+                Java 17 runtime.
+            </p>
+        </div>
+
+        <div class="discovery-step">
+            <strong>2. Investigating the four files</strong>
+            <p>
+                The changes in pull request #399 provided
+                a way to understand how architecture support
+                is implemented throughout the project.
+            </p>
+            <p style="margin-top:9px">
+                Instead of only examining platform detection,
+                the investigation also covered dependency
+                declarations, native runtime hashes and
+                bootstrap verification tests.
+            </p>
+        </div>
+
+        <div class="discovery-step">
+            <strong>3. Comparing the supported architectures</strong>
+            <p>
+                The ARM64 changes showed that adding support
+                for a new architecture involves more than
+                adding an architecture name to the platform
+                detector.
+            </p>
+            <p style="margin-top:9px">
+                The appropriate Compose Desktop dependency,
+                native Skiko runtime and bootstrap verification
+                information must also be available.
+            </p>
+        </div>
+
+        <div class="discovery-step">
+            <strong>4. Finding the missing x86 Skiko runtime</strong>
+            <p>
+                When attempting to add x86 to the relevant
+                files, the investigation reached an important
+                limitation: there was no corresponding
+                Windows x86 Skiko runtime available in the
+                runtime configuration being investigated.
+            </p>
+            <p style="margin-top:9px">
+                This was the missing piece that explained
+                why adding x86 to the platform definitions
+                alone would not make the graphical interface
+                work.
+            </p>
+        </div>
+
+        <div class="discovery-callout">
+            <strong>🔎 The key discovery</strong>
+            <p>
+                The problem was not simply that Morphe Desktop
+                did not recognise a 32-bit Java runtime.
+                The GUI also depended on native graphics
+                components, and the required Windows x86
+                Skiko runtime was missing from the available
+                dependency configuration.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- WHY 32 BIT DOES NOT WORK -->
+
+    <section class="content-card">
+
+        <h2>⚙️ Why 32-bit GUI support does not work</h2>
+
+        <p>
+            Morphe Desktop uses Compose Desktop for its
+            graphical interface. Compose Desktop relies
+            on Skiko for native graphics integration.
+        </p>
+
+        <p style="margin-top:12px">
+            Skiko is not just an ordinary Java library.
+            It also needs native platform-specific binaries
+            that match the operating system and processor
+            architecture.
+        </p>
+
+        <h3>Java alone is not enough</h3>
+
+        <p>
+            A 32-bit Java runtime can execute compatible
+            Java bytecode. However, that does not mean
+            every native library required by the application
+            is available for 32-bit Windows.
+        </p>
+
+        <h3>The missing native runtime</h3>
+
+        <p>
+            The Windows x86 GUI needs a compatible native
+            Skiko runtime. Without that runtime, the
+            graphics dependency cannot be loaded in the
+            required architecture.
+        </p>
+
+        <p style="margin-top:12px">
+            Adding x86 to PlatformDetector.kt would only
+            allow the application to identify the
+            architecture. It would not supply the missing
+            native graphics binaries.
+        </p>
+
+        <h3>Why the CLI still works</h3>
+
+        <p>
+            The command-line interface does not need to
+            initialize the same graphical rendering stack.
+            It can therefore work with 32-bit Java even
+            when the GUI cannot initialize its native
+            graphics dependencies.
+        </p>
+
+        <h3>Why the four files matter</h3>
+
+        <ul>
+            <li>PlatformDetector.kt identifies the operating system and architecture.</li>
+            <li>libs.versions.toml defines the required dependency versions and platform libraries.</li>
+            <li>GenerateBootstrapConstantsTask.java generates the native runtime verification information.</li>
+            <li>BootstrapDownloaderVerificationTest.kt checks important bootstrap and native dependency behaviour.</li>
+        </ul>
+
+        <div class="discovery-callout">
+            <strong>Important distinction</strong>
+            <p>
+                Platform detection, dependency availability
+                and native runtime compatibility are three
+                separate requirements. All of them must
+                work together before the GUI can run.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- ARCHITECTURE DIFFERENCES -->
+
+    <section class="content-card">
+
+        <h2>🖥️ Understanding the architectures</h2>
+
+        <p>
+            It is important not to confuse x86, x64 and
+            ARM64. They are different processor architectures
+            and require compatible native binaries.
+        </p>
+
+        <div class="table-wrapper" style="margin-top:20px">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Architecture</th>
+                        <th>Bits</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td><strong>x86</strong></td>
+                        <td>32-bit</td>
+                        <td>Traditional 32-bit Intel-compatible architecture.</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>x64</strong></td>
+                        <td>64-bit</td>
+                        <td>64-bit extension of the x86 architecture.</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ARM64</strong></td>
+                        <td>64-bit</td>
+                        <td>64-bit ARM architecture.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <p style="margin-top:15px">
+            Windows ARM64 support does not automatically
+            provide Windows x86 support. Each architecture
+            needs the appropriate native dependencies.
+        </p>
+
+    </section>
+
+    <!-- SKIKO REFERENCE -->
+
+    <section class="content-card">
+
+        <h2>📦 Skiko – Native graphics dependency</h2>
+
+        <p>
+            Skiko is an important part of the investigation
+            because it provides the native graphics
+            integration used by Compose Desktop.
+        </p>
+
+        <p style="margin-top:12px">
+            Its native runtime artifacts are architecture-
+            specific. This means the application cannot
+            simply use an x64 or ARM64 native binary as a
+            replacement for a Windows x86 runtime.
+        </p>
+
+        <div class="source-list" style="margin-top:20px">
+
+            <a class="source-link"
+               href="https://github.com/JetBrains/skiko"
+               target="_blank"
+               rel="noopener noreferrer">
+                <span>
+                    <strong>JetBrains Skiko – GitHub</strong>
+                    <small>Official Skiko source repository and project information.</small>
+                </span>
+                <span class="arrow">↗</span>
+            </a>
+
+        </div>
+
+        <h3>Why this repository is important</h3>
+
+        <ul>
+            <li>It provides the source code and project information for Skiko.</li>
+            <li>It helps investigate the available native graphics implementations.</li>
+            <li>Its releases and dependency artifacts are relevant when checking architecture support.</li>
+            <li>It provides a reference for determining whether a suitable x86 runtime is available.</li>
+        </ul>
+
+        <p style="margin-top:14px">
+            The absence of a suitable x86 runtime in the
+            configuration examined is the limitation
+            identified by this experiment. It should not
+            be interpreted as proof that no x86 Skiko
+            binaries have ever existed in any release
+            or third-party build.
+        </p>
+
+    </section>
+
+    <!-- CURRENT EXPERIMENTAL TEST -->
+
+    <section class="content-card">
+
+        <h2>🧪 Current experimental test: Building a 32-bit Skiko runtime</h2>
+
+        <p>
+            Although the investigation identified the
+            missing Windows x86 Skiko runtime as the main
+            limitation, I am currently testing whether
+            this limitation can be overcome.
+        </p>
+
+        <p style="margin-top:12px">
+            On my own fork of Skiko, I am experimenting
+            with building a 32-bit version of
+            <code>skiko-awt-runtime</code>.
+            The purpose is to determine whether a compatible
+            native graphics runtime can be produced and used
+            by Morphe Desktop with a 32-bit Java 17 runtime.
+        </p>
+
+        <div class="discovery-callout">
+
+            <strong>Current test objective</strong>
+
+            <p>
+                Build a Windows x86 skiko-awt-runtime and
+                integrate it into Morphe Desktop to test
+                whether the complete graphical interface
+                can run with Java 17 (32-bit).
+            </p>
+
+        </div>
+
+        <h3>What I am trying to establish</h3>
+
+        <ul>
+            <li>
+                Whether Skiko can be built successfully
+                for Windows x86.
+            </li>
+
+            <li>
+                Whether the resulting native runtime can
+                be loaded by a 32-bit Java 17 runtime.
+            </li>
+
+            <li>
+                Whether Compose Desktop can initialize
+                its graphical components using that runtime.
+            </li>
+
+            <li>
+                Whether Morphe Desktop can achieve full
+                GUI and CLI compatibility with 32-bit Java 17.
+            </li>
+        </ul>
+
+        <h3>Why this test matters</h3>
+
+        <p>
+            The missing runtime identified during the
+            investigation may be a dependency availability
+            limitation rather than an absolute technical
+            impossibility.
+        </p>
+
+        <p style="margin-top:12px">
+            By attempting to build the runtime independently,
+            I can investigate whether the required native
+            graphics support can be created instead of
+            relying on an already published runtime artifact.
+        </p>
+
+        <h3>Current test status</h3>
+
+        <span class="result partial">
+            Experimental – testing in progress
+        </span>
+
+        <p style="margin-top:14px">
+            Full 32-bit GUI compatibility has not yet been
+            confirmed. The result of this experiment will
+            determine whether the custom runtime can make
+            full Java 17 support possible.
+        </p>
 
     </section>
 
@@ -664,9 +1074,10 @@ footer strong {
         <h3>1. PlatformDetector.kt</h3>
 
         <p>
-            The current platform detector recognizes x64
-            and ARM64 architectures. It does not explicitly
-            recognize x86/32-bit architecture.
+            The investigated platform configuration
+            recognizes x64 and ARM64 architectures.
+            It does not explicitly recognize x86/32-bit
+            architecture.
         </p>
 
         <h3>2. GenerateBootstrapConstantsTask.java</h3>
@@ -683,10 +1094,10 @@ footer strong {
 
         <p>
             This file defines dependency versions, including
-            Compose Desktop and other libraries. It is worth
-            checking whether the selected dependency versions
-            and available native artifacts meet the desired
-            Java 17 compatibility requirements.
+            Compose Desktop and other libraries. It is
+            important to check whether the selected dependency
+            versions and available native artifacts support
+            the intended Java architecture.
         </p>
 
         <h3>4. BootstrapDownloaderVerificationTest.kt</h3>
@@ -699,8 +1110,8 @@ footer strong {
         </p>
 
         <p style="margin-top:12px">
-            These tests do not currently establish that the
-            32-bit graphical interface works. Additional
+            These tests do not establish that the 32-bit
+            graphical interface works. Additional
             architecture-specific testing would be needed.
         </p>
 
@@ -731,7 +1142,7 @@ footer strong {
 
             <div class="info-item">
                 <strong>32-bit GUI</strong>
-                <span>Still needs work</span>
+                <span>Blocked by missing compatible Skiko runtime</span>
             </div>
 
         </div>
@@ -739,27 +1150,12 @@ footer strong {
         <h3>Next steps</h3>
 
         <ul>
-            <li>
-                Investigate why the 32-bit GUI does not work.
-            </li>
-
-            <li>
-                Check whether the necessary native dependencies
-                support 32-bit Java.
-            </li>
-
-            <li>
-                Investigate platform detection and bootstrap
-                dependency resolution.
-            </li>
-
-            <li>
-                Add dedicated 32-bit compatibility tests.
-            </li>
-
-            <li>
-                Retest the GUI and CLI after every change.
-            </li>
+            <li>Continue testing the custom Windows x86 Skiko runtime.</li>
+            <li>Check whether the resulting native runtime can be loaded by Java 17 (32-bit).</li>
+            <li>Verify Compose Desktop graphics initialization.</li>
+            <li>Investigate platform detection and bootstrap dependency resolution.</li>
+            <li>Add dedicated 32-bit compatibility tests if the necessary native dependencies become available.</li>
+            <li>Retest the GUI and CLI after every change.</li>
         </ul>
 
     </section>
@@ -784,7 +1180,7 @@ footer strong {
 
             <div class="info-item">
                 <strong>Experiment type</strong>
-                <span>Compatibility</span>
+                <span>Compatibility investigation</span>
             </div>
 
             <div class="info-item">
@@ -799,7 +1195,7 @@ footer strong {
 
             <div class="info-item">
                 <strong>Main objective</strong>
-                <span>Full 32-bit and 64-bit support</span>
+                <span>Full 32-bit and 64-bit support where dependencies allow</span>
             </div>
 
         </div>
